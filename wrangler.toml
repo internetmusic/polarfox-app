@@ -1,0 +1,7 @@
+// TODO: Figure out what this file is
+name = "polarfox-app-temp"
+type = "javascript"
+route = "app.polarfox.io/*"
+
+[site]
+bucket = "./build"

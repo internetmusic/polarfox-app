@@ -1,0 +1,22 @@
+{
+  "short_name": "Polarfox",
+  "name": "Polarfox",
+  "icons": [
+    {
+      "src": "./images/192x192_App_Icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./images/384x384_App_Icon.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "orientation": "portrait",
+  "display": "standalone",
+  "theme_color": "#1ca4ff",
+  "background_color": "#fff"
+}
