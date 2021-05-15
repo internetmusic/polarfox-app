@@ -15,8 +15,10 @@ export const ANALYTICS_PAGE = 'https://info.polarfox.io/'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
-// TODO: This is not defined for FUJI. Define for FUJI. This should depend on the chainId.
-export const GOVERNANCE_ADDRESS = '0xb0Ff2b1047d9E8d294c2eD798faE3fA817F43Ee1' // TODO: Update
+export const GOVERNANCE_ADDRESS: { [chainId in ChainId]: string } = {
+  [ChainId.FUJI]: '0xbC5536972bf331a5492ac9c73851cb97BbA6fAB1',
+  [ChainId.AVALANCHE]: '' // TODO: Update
+}
 
 // a list of tokens by chain
 type ChainTokenList = {
@@ -24,7 +26,7 @@ type ChainTokenList = {
 }
 
 export const PFX: { [chainId in ChainId]: Token } = {
-  [ChainId.FUJI]: new Token(ChainId.FUJI, '0x90E487E9a08fF29B2F97ECd0eD73886692dF70D1', 18, 'PFX', 'Polarfox'),
+  [ChainId.FUJI]: new Token(ChainId.FUJI, '0x84746e3fFf4A7D1f5F7404641AB7CB8aefF4BB9D', 18, 'PFX', 'Polarfox'),
   [ChainId.AVALANCHE]: new Token(ChainId.AVALANCHE, '0x60781C2586D68229fde47564546784ab3fACA982', 18, 'PFX', 'Polarfox') // TODO: Wrong address, must update
 }
 

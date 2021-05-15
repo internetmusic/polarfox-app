@@ -1,11 +1,10 @@
 import { Contract } from '@ethersproject/contracts'
 import { WAVAX } from '@polarfox/sdk'
 import { abi as IPolarfoxPairABI } from '@polarfox/core/build/IPolarfoxPair.json'
-// TODO: This should be in the core, not in the governance
-import { abi as STAKING_REWARDS_ABI } from '@polarfox/governance/artifacts/contracts/StakingRewards.sol/StakingRewards.json'
-import { abi as AIRDROP_ABI } from '@polarfox/governance/artifacts/contracts/Airdrop.sol/Airdrop.json'
+import { abi as STAKING_REWARDS_ABI } from '@polarfox/core/build/StakingRewards.json'
+// import { abi as AIRDROP_ABI } from '@polarfox/governance/artifacts/contracts/Airdrop.sol/Airdrop.json'
 import { abi as GOVERNANCE_ABI } from '@polarfox/governance/artifacts/contracts/GovernorAlpha.sol/GovernorAlpha.json'
-import { abi as PFX_ABI } from '@polarfox/core/other_contracts/build/Pfx.json'
+import { abi as PFX_ABI } from '@polarfox/governance/artifacts/contracts/PFX.sol/Pfx.json'
 import { useMemo } from 'react'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
@@ -16,7 +15,6 @@ import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { V1_EXCHANGE_ABI, V1_FACTORY_ABI, V1_FACTORY_ADDRESSES } from '../constants/v1'
 import { getContract } from '../utils'
 import { useActiveWeb3React } from './index'
-import { AIRDROP_ADDRESS } from '../constants'
 import { GOVERNANCE_ADDRESS, PFX } from '../constants'
 
 // returns null on errors
@@ -74,7 +72,8 @@ export function useMulticallContract(): Contract | null {
 }
 
 export function useGovernanceContract(): Contract | null {
-  return useContract(GOVERNANCE_ADDRESS, GOVERNANCE_ABI, true)
+  const { chainId } = useActiveWeb3React()
+  return useContract(chainId ? GOVERNANCE_ADDRESS[chainId] : undefined, GOVERNANCE_ABI, true)
 }
 
 export function usePfxContract(): Contract | null {
@@ -87,6 +86,5 @@ export function useStakingContract(stakingAddress?: string, withSignerIfPossible
 }
 
 export function useAirdropContract(): Contract | null {
-  const { chainId } = useActiveWeb3React()
-  return useContract(chainId ? AIRDROP_ADDRESS[chainId] : undefined, AIRDROP_ABI, true)
+  return null // TODO reactive Airdrop
 }
