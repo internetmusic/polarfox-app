@@ -74,7 +74,8 @@ export function useMulticallContract(): Contract | null {
 }
 
 export function useGovernanceContract(): Contract | null {
-  return useContract(GOVERNANCE_ADDRESS, GOVERNANCE_ABI, true)
+  const { chainId } = useActiveWeb3React()
+  return useContract(chainId ? GOVERNANCE_ADDRESS[chainId] : undefined, GOVERNANCE_ABI, true)
 }
 
 export function usePfxContract(): Contract | null {
