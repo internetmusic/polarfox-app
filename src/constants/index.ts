@@ -16,7 +16,7 @@ export const ANALYTICS_PAGE = 'https://info.polarfox.io/'
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 export const GOVERNANCE_ADDRESS: { [chainId in ChainId]: string } = {
-  [ChainId.FUJI]: '0xbC5536972bf331a5492ac9c73851cb97BbA6fAB1',
+  [ChainId.FUJI]: '0xad3CB8d7B31b2f9619Fe82ae93DF5C041fFf87cE',
   [ChainId.AVALANCHE]: '' // TODO: Update
 }
 
