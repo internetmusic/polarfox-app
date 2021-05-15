@@ -1,7 +1,6 @@
 import { Contract } from '@ethersproject/contracts'
 import { WAVAX } from '@polarfox/sdk'
 import { abi as IPolarfoxPairABI } from '@polarfox/core/build/IPolarfoxPair.json'
-// TODO: This should be in the core, not in the governance
 import { abi as STAKING_REWARDS_ABI } from '@polarfox/core/build/StakingRewards.json'
 // import { abi as AIRDROP_ABI } from '@polarfox/governance/artifacts/contracts/Airdrop.sol/Airdrop.json'
 import { abi as GOVERNANCE_ABI } from '@polarfox/governance/artifacts/contracts/GovernorAlpha.sol/GovernorAlpha.json'
