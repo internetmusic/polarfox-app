@@ -1,6 +1,6 @@
 import { ChainId, CurrencyAmount, JSBI, Token, TokenAmount, WAVAX, Pair } from '@polarfox/sdk'
 import { useMemo } from 'react'
-import { PFX, DAI, UNI, SUSHI, ETH, USDT, WBTC, LINK, AAVE, YFI, TEST1, TEST2 } from '../../constants'
+import { PFX, AKITA, TEST1 } from '../../constants'
 import { STAKING_REWARDS_INTERFACE } from '../../constants/abis/staking-rewards'
 import { PairState, usePair, usePairs } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
@@ -12,102 +12,44 @@ export const STAKING_GENESIS = 1600387200 // TODO: Update this - make it depend 
 export const REWARDS_DURATION_DAYS = 60
 
 // TODO: Update all the staking rewards addresses here
-export const STAKING_REWARDS_INFO: {
+export const PFX_STAKING_REWARDS_INFO: {
   [chainId in ChainId]?: {
     tokens: [Token, Token]
     stakingRewardAddress: string
   }[]
 } = {
-  [ChainId.AVALANCHE]: [
-    {
-      tokens: [WAVAX[ChainId.AVALANCHE], ETH[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0xa16381eae6285123c323a665d4d99a6bcfaac307'
-    },
-    {
-      tokens: [WAVAX[ChainId.AVALANCHE], USDT[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0x4f019452f51bba0250ec8b69d64282b79fc8bd9f'
-    },
-    {
-      tokens: [WAVAX[ChainId.AVALANCHE], WBTC[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0x01897e996eefff65ae9999c02d1d8d7e9e0c0352'
-    },
-    {
-      tokens: [WAVAX[ChainId.AVALANCHE], PFX[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0x8fd2755c6ae7252753361991bdcd6ff55bdc01ce'
-    },
-    {
-      tokens: [WAVAX[ChainId.AVALANCHE], LINK[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0x7d7ecd4d370384b17dfc1b4155a8410e97841b65'
-    },
-    {
-      tokens: [WAVAX[ChainId.AVALANCHE], DAI[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0xb5b9ded9c193731f816ae1f8ffb7f8b0fae40c88'
-    },
-    {
-      tokens: [WAVAX[ChainId.AVALANCHE], UNI[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0xe4d9ae03859dac6d65432d557f75b9b588a38ee1'
-    },
-    {
-      tokens: [WAVAX[ChainId.AVALANCHE], SUSHI[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0x88f26b81c9cae4ea168e31bc6353f493fda29661'
-    },
-    {
-      tokens: [WAVAX[ChainId.AVALANCHE], AAVE[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0xee0023108918884181e48902f7c797573f413ece'
-    },
-    {
-      tokens: [WAVAX[ChainId.AVALANCHE], YFI[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0x797cbcf107519f4b279fc5db372e292cdf7e6956'
-    },
-    {
-      tokens: [PFX[ChainId.AVALANCHE], ETH[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0x4e550fefbf888cb43ead73d821f646f43b1f2309'
-    },
-    {
-      tokens: [PFX[ChainId.AVALANCHE], USDT[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0x7accc6f16bf8c0dce22371fbd914c6b5b402bf9f'
-    },
-    {
-      tokens: [PFX[ChainId.AVALANCHE], WBTC[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0x99b06b9673fea30ba55179b1433ce909fdc28723'
-    },
-    {
-      tokens: [PFX[ChainId.AVALANCHE], LINK[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0x4ad6e309805cb477010bea9ffc650cb27c1a9504'
-    },
-    {
-      tokens: [PFX[ChainId.AVALANCHE], DAI[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0x8866077f08b076360c25f4fd7fbc959ef135474c'
-    },
-    {
-      tokens: [PFX[ChainId.AVALANCHE], UNI[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0x41188b4332fe68135d1524e43db98e81519d263b'
-    },
-    {
-      tokens: [PFX[ChainId.AVALANCHE], SUSHI[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0x6955cb85edea63f861c0be39c3d7f8921606c4dc'
-    },
-    {
-      tokens: [PFX[ChainId.AVALANCHE], AAVE[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0xb921a3ae9ceda66fa8a74dbb0946367fb14fae34'
-    },
-    {
-      tokens: [PFX[ChainId.AVALANCHE], YFI[ChainId.AVALANCHE]],
-      stakingRewardAddress: '0x2061298c76cd76219b9b44439e96a75f19c61f7f'
-    }
-  ],
+  [ChainId.AVALANCHE]: [],
   [ChainId.FUJI]: [
     {
-      tokens: [WAVAX[ChainId.FUJI], PFX[ChainId.FUJI]],
-      stakingRewardAddress: '0x17bf46251493aB36E7b197357A4926075Feb0834'
+      tokens: [PFX[ChainId.FUJI], WAVAX[ChainId.FUJI]],
+      stakingRewardAddress: '0x4bBd083B7DdF1e7019f6abB14738D4Ff4F686EcA'
     },
     {
       tokens: [PFX[ChainId.FUJI], TEST1[ChainId.FUJI]],
-      stakingRewardAddress: '0x3c43CBb43bF5D030615C5951b7E20F7B86888cA5'
+      stakingRewardAddress: '0x5bBE66E9C8D0A9877A1CC4bD203E03174Ca28928'
     },
     {
-      tokens: [TEST1[ChainId.FUJI], TEST2[ChainId.FUJI]],
-      stakingRewardAddress: '0x601b6575bfF761BC1D16aA35a730951A8Ff4097B'
+      tokens: [WAVAX[ChainId.FUJI], TEST1[ChainId.FUJI]],
+      stakingRewardAddress: '0xEa40Eee828ee265915e0CFc634bEf078E27F1D28'
+    }
+  ]
+}
+
+export const GAKITA_STAKING_REWARDS_INFO: {
+  [chainId in ChainId]?: {
+    tokens: [Token, Token]
+    stakingRewardAddress: string
+  }[]
+} = {
+  [ChainId.AVALANCHE]: [],
+  [ChainId.FUJI]: [
+    {
+      tokens: [AKITA[ChainId.FUJI], PFX[ChainId.FUJI]],
+      stakingRewardAddress: '0xeb1E41117F816aF98E0Dd3c22Ee4A97A2E5B08fA'
+    },
+    {
+      tokens: [AKITA[ChainId.FUJI], WAVAX[ChainId.FUJI]],
+      stakingRewardAddress: '0x9f61fCDC2B7c286fD382ef59E4E85E6CeedDd16A'
     }
   ]
 }
@@ -197,13 +139,18 @@ const calculateTotalStakedAmountInAvax = function(
 }
 
 // gets the staking info from the network for the active chain id
-export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
+export function useStakingInfo(
+  stakingRewardsInfo: {
+    [chainId in ChainId]?: { tokens: [Token, Token]; stakingRewardAddress: string }[] | undefined
+  },
+  pairToFilterBy?: Pair | null
+): StakingInfo[] {
   const { chainId, account } = useActiveWeb3React()
 
   const info = useMemo(
     () =>
       chainId
-        ? STAKING_REWARDS_INFO[chainId]?.filter(stakingRewardInfo =>
+        ? stakingRewardsInfo[chainId]?.filter(stakingRewardInfo =>
             pairToFilterBy === undefined
               ? true
               : pairToFilterBy === null
@@ -212,7 +159,7 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
                 pairToFilterBy.involvesToken(stakingRewardInfo.tokens[1])
           ) ?? []
         : [],
-    [chainId, pairToFilterBy]
+    [chainId, pairToFilterBy, stakingRewardsInfo]
   )
 
   const pfx = chainId ? PFX[chainId] : PFX[ChainId.AVALANCHE]
@@ -364,10 +311,18 @@ export function useStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
   ])
 }
 
+export function usePfxStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
+  return useStakingInfo(PFX_STAKING_REWARDS_INFO, pairToFilterBy)
+}
+
+export function useGAkitaStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
+  return useStakingInfo(GAKITA_STAKING_REWARDS_INFO, pairToFilterBy)
+}
+
 export function useTotalPfxEarned(): TokenAmount | undefined {
   const { chainId } = useActiveWeb3React()
   const pfx = chainId ? PFX[chainId] : undefined
-  const stakingInfos = useStakingInfo()
+  const stakingInfos = usePfxStakingInfo()
 
   return useMemo(() => {
     if (!pfx) return undefined

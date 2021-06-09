@@ -6,7 +6,7 @@ import { injected } from '../connectors'
 export const GAS_PRICE = 225
 
 export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
-  [ChainId.FUJI]: '0xAeD3baD38CA8907EBC8C919d12a25a58A17063A7',
+  [ChainId.FUJI]: '0xC0d46a61e1B2f246c9C376c2f9CCe568df660D4C',
   [ChainId.AVALANCHE]: '0xE54Ca86531e17Ef3616d22Ca28b0D458b6C89106' // TODO: Update
 }
 
@@ -27,7 +27,23 @@ type ChainTokenList = {
 
 export const PFX: { [chainId in ChainId]: Token } = {
   [ChainId.FUJI]: new Token(ChainId.FUJI, '0x90E487E9a08fF29B2F97ECd0eD73886692dF70D1', 18, 'PFX', 'Polarfox'),
-  [ChainId.AVALANCHE]: new Token(ChainId.AVALANCHE, '0x60781C2586D68229fde47564546784ab3fACA982', 18, 'PFX', 'Polarfox') // TODO: Wrong address, must update
+  [ChainId.AVALANCHE]: new Token(ChainId.AVALANCHE, ZERO_ADDRESS, 18, 'PFX', 'Polarfox') // TODO: Wrong address, must update
+}
+
+export const AKITA: { [chainId in ChainId]: Token } = {
+  [ChainId.FUJI]: new Token(ChainId.FUJI, '0xFf2Ebd79c0948C8fE69b96434915ABC03Ebb5c37', 18, 'AKITA', 'Akita Inu'),
+  [ChainId.AVALANCHE]: new Token(ChainId.AVALANCHE, ZERO_ADDRESS, 18, 'AKITA', 'Akita Inu') // TODO: Wrong address, must update
+}
+
+export const gAKITA: { [chainId in ChainId]: Token } = {
+  [ChainId.FUJI]: new Token(
+    ChainId.FUJI,
+    '0xa1cbD835A868D374aBc0B429A294A2F05C6C868A',
+    18,
+    'gAKITA',
+    'Akita Inu Governance Token'
+  ),
+  [ChainId.AVALANCHE]: new Token(ChainId.AVALANCHE, ZERO_ADDRESS, 18, 'gAKITA', 'Akita Inu Governance Token') // TODO: Wrong address, must update
 }
 
 // Test tokens
@@ -47,8 +63,8 @@ export const TEST3: { [chainId in ChainId]: Token } = {
 }
 
 export const ETH: { [chainId in ChainId]: Token } = {
-  [ChainId.FUJI]: new Token(ChainId.FUJI, ZERO_ADDRESS, 18, 'ETH', 'Ether'),
-  [ChainId.AVALANCHE]: new Token(ChainId.AVALANCHE, '0xf20d962a6c8f70c731bd838a3a388D7d48fA6e15', 18, 'ETH', 'Ether')
+  [ChainId.FUJI]: new Token(ChainId.FUJI, ZERO_ADDRESS, 18, 'ETH', 'Ether'), // TODO: Wrong address, must update
+  [ChainId.AVALANCHE]: new Token(ChainId.AVALANCHE, '0xf20d962a6c8f70c731bd838a3a388D7d48fA6e15', 18, 'ETH', 'Ether') // TODO: Wrong address, must update
 }
 
 export const USDT: { [chainId in ChainId]: Token } = {
@@ -60,7 +76,7 @@ export const USDT: { [chainId in ChainId]: Token } = {
     'USDT',
     'Tether USD'
   )
-}
+} // TODO: Wrong address, must update
 
 export const WBTC: { [chainId in ChainId]: Token } = {
   [ChainId.FUJI]: new Token(ChainId.FUJI, ZERO_ADDRESS, 8, 'WBTC', 'Wrapped Bitcoin'),
@@ -71,7 +87,7 @@ export const WBTC: { [chainId in ChainId]: Token } = {
     'WBTC',
     'Wrapped Bitcoin'
   )
-}
+} // TODO: Wrong address, must update
 
 export const LINK: { [chainId in ChainId]: Token } = {
   [ChainId.FUJI]: new Token(ChainId.FUJI, ZERO_ADDRESS, 18, 'LINK', 'ChainLink Token'),
@@ -82,7 +98,7 @@ export const LINK: { [chainId in ChainId]: Token } = {
     'LINK',
     'ChainLink Token'
   )
-}
+} // TODO: Wrong address, must update
 
 export const DAI: { [chainId in ChainId]: Token } = {
   [ChainId.FUJI]: new Token(ChainId.FUJI, ZERO_ADDRESS, 18, 'DAI', 'Dai Stablecoin'),
@@ -93,12 +109,12 @@ export const DAI: { [chainId in ChainId]: Token } = {
     'DAI',
     'Dai Stablecoin'
   )
-}
+} // TODO: Wrong address, must update
 
 export const UNI: { [chainId in ChainId]: Token } = {
   [ChainId.FUJI]: new Token(ChainId.FUJI, ZERO_ADDRESS, 18, 'UNI', 'Uniswap'),
   [ChainId.AVALANCHE]: new Token(ChainId.AVALANCHE, '0xf39f9671906d8630812f9d9863bBEf5D523c84Ab', 18, 'UNI', 'Uniswap')
-}
+} // TODO: Wrong address, must update
 
 export const SUSHI: { [chainId in ChainId]: Token } = {
   [ChainId.FUJI]: new Token(ChainId.FUJI, ZERO_ADDRESS, 18, 'SUSHI', 'SushiToken'),
@@ -109,7 +125,7 @@ export const SUSHI: { [chainId in ChainId]: Token } = {
     'SUSHI',
     'SushiToken'
   )
-}
+} // TODO: Wrong address, must update
 
 export const AAVE: { [chainId in ChainId]: Token } = {
   [ChainId.FUJI]: new Token(ChainId.FUJI, ZERO_ADDRESS, 18, 'AAVE', 'Aave Token'),
@@ -120,7 +136,7 @@ export const AAVE: { [chainId in ChainId]: Token } = {
     'AAVE',
     'Aave Token'
   )
-}
+} // TODO: Wrong address, must update
 
 export const YFI: { [chainId in ChainId]: Token } = {
   [ChainId.FUJI]: new Token(ChainId.FUJI, ZERO_ADDRESS, 18, 'YFI', 'yearn.finance'),
@@ -131,11 +147,11 @@ export const YFI: { [chainId in ChainId]: Token } = {
     'YFI',
     'yearn.finance'
   )
-}
+} // TODO: Wrong address, must update
 
 export const AIRDROP_ADDRESS: { [chainId in ChainId]?: string } = {
   [ChainId.FUJI]: ZERO_ADDRESS, // TODO: update this
-  [ChainId.AVALANCHE]: '0x0C58C2041da4CfCcF5818Bbe3b66DBC23B3902d9'
+  [ChainId.AVALANCHE]: '0x0C58C2041da4CfCcF5818Bbe3b66DBC23B3902d9' // TODO: Wrong address, must update
 }
 
 const WAVAX_ONLY: ChainTokenList = {
