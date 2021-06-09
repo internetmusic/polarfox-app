@@ -9,6 +9,7 @@ import { CardSection, DataCard, CardNoise, CardBGImage } from '../../components/
 import Loader from '../../components/Loader'
 import { useActiveWeb3React } from '../../hooks'
 import { JSBI } from '@polarfox/sdk'
+import { Countdown } from './Countdown'
 
 const PageWrapper = styled(AutoColumn)`
   max-width: 640px;
@@ -77,7 +78,8 @@ export default function Earn() {
       <AutoColumn gap="lg" style={{ width: '100%', maxWidth: '720px' }}>
         <DataRow style={{ alignItems: 'baseline' }}>
           <TYPE.mediumHeader style={{ marginTop: '0.5rem' }}>Participating pools</TYPE.mediumHeader>
-          <TYPE.black fontWeight={400}>The Rewards Never End!</TYPE.black>
+          <Countdown exactEnd={pfxStakingInfos?.[0]?.periodFinish} />
+          {/* <TYPE.black fontWeight={400}>The Rewards Never End!</TYPE.black> */}
         </DataRow>
 
         <PoolSection>
