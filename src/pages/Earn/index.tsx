@@ -1,7 +1,12 @@
 import React from 'react'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
-import { PFX_STAKING_REWARDS_INFO, usePfxStakingInfo } from '../../state/stake/hooks'
+import {
+  PFX_STAKING_REWARDS_INFO,
+  GAKITA_STAKING_REWARDS_INFO,
+  usePfxStakingInfo,
+  useGAkitaStakingInfo
+} from '../../state/stake/hooks'
 import { TYPE, ExternalLink } from '../../theme'
 import PoolCard from '../../components/earn/PoolCard'
 import { RowBetween } from '../../components/Row'
@@ -9,7 +14,7 @@ import { CardSection, DataCard, CardNoise, CardBGImage } from '../../components/
 import Loader from '../../components/Loader'
 import { useActiveWeb3React } from '../../hooks'
 import { JSBI } from '@polarfox/sdk'
-import { Countdown } from './Countdown'
+import { Countdown } from '../../components/earn/Countdown'
 
 const PageWrapper = styled(AutoColumn)`
   max-width: 640px;
@@ -30,9 +35,12 @@ const PoolSection = styled.div`
   justify-self: center;
 `
 
-export default function Earn() {
+export function Earn(isPfx: boolean) {
+  const stakingRewardsInfo = isPfx ? PFX_STAKING_REWARDS_INFO : GAKITA_STAKING_REWARDS_INFO
+  const stakingInfoGetter = isPfx ? usePfxStakingInfo : useGAkitaStakingInfo
+
   const { chainId } = useActiveWeb3React()
-  const pfxStakingInfos = usePfxStakingInfo()
+  const stakingInfos = stakingInfoGetter()
 
   const DataRow = styled(RowBetween)`
     ${({ theme }) => theme.mediaWidth.upToSmall`
@@ -40,9 +48,7 @@ export default function Earn() {
    `};
   `
 
-  const stakingRewardsExist = Boolean(
-    typeof chainId === 'number' && (PFX_STAKING_REWARDS_INFO[chainId]?.length ?? 0) > 0
-  )
+  const stakingRewardsExist = Boolean(typeof chainId === 'number' && (stakingRewardsInfo[chainId]?.length ?? 0) > 0)
 
   return (
     <PageWrapper gap="lg" justify="center">
@@ -78,17 +84,16 @@ export default function Earn() {
       <AutoColumn gap="lg" style={{ width: '100%', maxWidth: '720px' }}>
         <DataRow style={{ alignItems: 'baseline' }}>
           <TYPE.mediumHeader style={{ marginTop: '0.5rem' }}>Participating pools</TYPE.mediumHeader>
-          <Countdown exactEnd={pfxStakingInfos?.[0]?.periodFinish} />
-          {/* <TYPE.black fontWeight={400}>The Rewards Never End!</TYPE.black> */}
+          <Countdown exactEnd={stakingInfos?.[0]?.periodFinish} />
         </DataRow>
 
         <PoolSection>
-          {stakingRewardsExist && pfxStakingInfos?.length === 0 ? (
+          {stakingRewardsExist && stakingInfos?.length === 0 ? (
             <Loader style={{ margin: 'auto' }} />
           ) : !stakingRewardsExist ? (
             'No active rewards'
           ) : (
-            pfxStakingInfos
+            stakingInfos
               ?.sort(function(infoA, infoB) {
                 // greater stake in avax comes first
                 return infoA.totalStakedInWavax?.greaterThan(infoB.totalStakedInWavax ?? JSBI.BigInt(0)) ? -1 : 1
@@ -109,11 +114,19 @@ export default function Earn() {
                 }
               })
               .map(stakingInfo => {
-                return <PoolCard key={stakingInfo.stakingRewardAddress} stakingInfo={stakingInfo} />
+                return <PoolCard key={stakingInfo.stakingRewardAddress} stakingInfo={stakingInfo} isPfx={isPfx} />
               })
           )}
         </PoolSection>
       </AutoColumn>
     </PageWrapper>
   )
+}
+
+export function EarnPfx() {
+  return Earn(true)
+}
+
+export function EarnGAkita() {
+  return Earn(false)
 }

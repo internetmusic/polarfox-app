@@ -22,9 +22,12 @@ interface StakingModalProps {
   isOpen: boolean
   onDismiss: () => void
   stakingInfo: StakingInfo
+  isPfx: boolean
 }
 
-export default function ClaimRewardModal({ isOpen, onDismiss, stakingInfo }: StakingModalProps) {
+export default function ClaimRewardModal({ isOpen, onDismiss, stakingInfo, isPfx }: StakingModalProps) {
+  const rewardTokenSymbol = isPfx ? 'PFX' : 'gAKITA'
+
   const { account } = useActiveWeb3React()
 
   // monitor call to help UI loading state
@@ -47,7 +50,7 @@ export default function ClaimRewardModal({ isOpen, onDismiss, stakingInfo }: Sta
         .getReward({ gasLimit: 350000 })
         .then((response: TransactionResponse) => {
           addTransaction(response, {
-            summary: `Claim accumulated PFX rewards`
+            summary: `Claim accumulated ${rewardTokenSymbol} rewards`
           })
           setHash(response.hash)
         })
@@ -79,7 +82,7 @@ export default function ClaimRewardModal({ isOpen, onDismiss, stakingInfo }: Sta
               <TYPE.body fontWeight={600} fontSize={36}>
                 {stakingInfo?.earnedAmount?.toSignificant(6)}
               </TYPE.body>
-              <TYPE.body>Unclaimed PFX</TYPE.body>
+              <TYPE.body>Unclaimed {rewardTokenSymbol}</TYPE.body>
             </AutoColumn>
           )}
           <TYPE.subHeader style={{ textAlign: 'center' }}>
@@ -94,7 +97,9 @@ export default function ClaimRewardModal({ isOpen, onDismiss, stakingInfo }: Sta
       {attempting && !hash && (
         <LoadingView onDismiss={wrappedOnDismiss}>
           <AutoColumn gap="12px" justify={'center'}>
-            <TYPE.body fontSize={20}>Claiming {stakingInfo?.earnedAmount?.toSignificant(6)} PFX</TYPE.body>
+            <TYPE.body fontSize={20}>
+              Claiming {stakingInfo?.earnedAmount?.toSignificant(6)} {rewardTokenSymbol}
+            </TYPE.body>
           </AutoColumn>
         </LoadingView>
       )}
@@ -102,7 +107,7 @@ export default function ClaimRewardModal({ isOpen, onDismiss, stakingInfo }: Sta
         <SubmittedView onDismiss={wrappedOnDismiss} hash={hash}>
           <AutoColumn gap="12px" justify={'center'}>
             <TYPE.largeHeader>Transaction Submitted</TYPE.largeHeader>
-            <TYPE.body fontSize={20}>Claimed PFX!</TYPE.body>
+            <TYPE.body fontSize={20}>Claimed {rewardTokenSymbol}!</TYPE.body>
           </AutoColumn>
         </SubmittedView>
       )}

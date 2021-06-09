@@ -12,7 +12,7 @@ import { currencyId } from '../../utils/currencyId'
 import { Break, CardNoise, CardBGImage } from './styled'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
 // import useUSDCPrice from '../../utils/useUSDCPrice'
-import { PFX } from '../../constants'
+import { PFX, gAKITA } from '../../constants'
 
 const StatContainer = styled.div`
   display: flex;
@@ -71,7 +71,11 @@ const BottomSection = styled.div<{ showBackground: boolean }>`
   z-index: 1;
 `
 
-export default function PoolCard({ stakingInfo }: { stakingInfo: StakingInfo }) {
+export default function PoolCard({ stakingInfo, isPfx }: { stakingInfo: StakingInfo; isPfx: boolean }) {
+  const rewardToken = isPfx ? PFX : gAKITA
+  const route = isPfx ? 'pfx' : 'gakita'
+  const rewardTokenSymbol = isPfx ? 'PFX' : 'gAKITA'
+
   const token0 = stakingInfo.tokens[0]
   const token1 = stakingInfo.tokens[1]
 
@@ -85,17 +89,17 @@ export default function PoolCard({ stakingInfo }: { stakingInfo: StakingInfo }) 
   if (avaxPool) {
     token = currency0 === CAVAX ? token1 : token0
   } else {
-    token = token0.equals(PFX[token0.chainId]) ? token1 : token0
+    token = token0.equals(rewardToken[token0.chainId]) ? token1 : token0
   }
   // let valueOfTotalStakedAmountInUSDC: CurrencyAmount | undefined
   // get the color of the token
-  let backgroundColor = useColor(token)
+  const backgroundColor = useColor(token)
 
   // let usdToken: Token
   // const USDPrice = useUSDCPrice(usdToken)
   // valueOfTotalStakedAmountInUSDC =
   // valueOfTotalStakedAmountInWavax && USDPrice?.quote(valueOfTotalStakedAmountInWavax)
-  let weeklyRewardAmount = stakingInfo.totalRewardRate.multiply(JSBI.BigInt(60 * 60 * 24 * 7))
+  const weeklyRewardAmount = stakingInfo.totalRewardRate.multiply(JSBI.BigInt(60 * 60 * 24 * 7))
 
   const weeklyRewardPerAvax = JSBI.equal(stakingInfo.totalStakedInWavax.raw, JSBI.BigInt(0))
     ? new Fraction(JSBI.BigInt(0), JSBI.BigInt(1))
@@ -112,7 +116,10 @@ export default function PoolCard({ stakingInfo }: { stakingInfo: StakingInfo }) 
           {currency0.symbol}-{currency1.symbol}
         </TYPE.white>
 
-        <StyledInternalLink to={`/pfx/${currencyId(currency0)}/${currencyId(currency1)}`} style={{ width: '100%' }}>
+        <StyledInternalLink
+          to={`/${route}/${currencyId(currency0)}/${currencyId(currency1)}`}
+          style={{ width: '100%' }}
+        >
           <ButtonPrimary padding="8px" borderRadius="8px">
             {isStaking ? 'Manage' : 'Deposit'}
           </ButtonPrimary>
@@ -131,12 +138,14 @@ export default function PoolCard({ stakingInfo }: { stakingInfo: StakingInfo }) 
         </RowBetween>
         <RowBetween>
           <TYPE.white> Pool rate </TYPE.white>
-          <TYPE.white>{`${weeklyRewardAmount.toFixed(0, { groupSeparator: ',' })} PFX / week`}</TYPE.white>
+          <TYPE.white>{`${weeklyRewardAmount.toFixed(0, {
+            groupSeparator: ','
+          })} ${rewardTokenSymbol} / week`}</TYPE.white>
         </RowBetween>
         <RowBetween>
           <TYPE.white> Current reward </TYPE.white>
           <TYPE.white>{`${weeklyRewardPerAvax.toFixed(4, { groupSeparator: ',' }) ??
-            '-'} PFX / Week per AVAX`}</TYPE.white>
+            '-'} ${rewardTokenSymbol} / Week per AVAX`}</TYPE.white>
         </RowBetween>
       </StatContainer>
 
@@ -154,7 +163,7 @@ export default function PoolCard({ stakingInfo }: { stakingInfo: StakingInfo }) 
               </span>
               {`${stakingInfo.rewardRate
                 ?.multiply(`${60 * 60 * 24 * 7}`)
-                ?.toSignificant(4, { groupSeparator: ',' })} PFX / week`}
+                ?.toSignificant(4, { groupSeparator: ',' })} ${rewardTokenSymbol} / week`}
             </TYPE.black>
           </BottomSection>
         </>

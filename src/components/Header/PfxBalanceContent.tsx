@@ -2,7 +2,7 @@ import { ChainId, TokenAmount, WAVAX, JSBI } from '@polarfox/sdk'
 import React, { useMemo } from 'react'
 import { X } from 'react-feather'
 import styled from 'styled-components'
-import tokenLogo from '../../assets/images/pfx-logo.png'
+import pfxLogo from '../../assets/images/pfx-logo.png'
 import { PFX } from '../../constants'
 import { useTotalSupply } from '../../data/TotalSupply'
 import { useActiveWeb3React } from '../../hooks'
@@ -87,7 +87,7 @@ export default function PfxBalanceContent({ setShowPfxBalanceModal }: { setShowP
           <>
             <CardSection gap="sm">
               <AutoColumn gap="md" justify="center">
-                <PfxTokenAnimated width="48px" src={tokenLogo} />{' '}
+                <PfxTokenAnimated width="48px" src={pfxLogo} />{' '}
                 <TYPE.white fontSize={48} fontWeight={600} color="white">
                   {total?.toFixed(2, { groupSeparator: ',' })}
                 </TYPE.white>
