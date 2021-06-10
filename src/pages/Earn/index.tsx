@@ -59,20 +59,20 @@ export function Earn(isPfx: boolean) {
           <CardSection>
             <AutoColumn gap="md">
               <RowBetween>
-                <TYPE.white fontWeight={600}>Polarfox liquidity mining</TYPE.white>
+                <TYPE.white fontWeight={600}>{isPfx ? 'Polarfox' : 'gAKITA'} liquidity mining</TYPE.white>
               </RowBetween>
               <RowBetween>
                 <TYPE.white fontSize={14}>
-                  Deposit your Polarfox Liquidity Provider PFX-LP tokens to receive PFX, the Polarfox protocol
-                  governance token.
+                  Deposit your Polarfox Liquidity Provider PFX-LP tokens to receive{' '}
+                  {isPfx ? 'PFX, the Polarfox' : 'gAKITA, the Akita Inu'} governance token.
                 </TYPE.white>
               </RowBetween>{' '}
               <ExternalLink
                 style={{ color: 'white', textDecoration: 'underline' }}
-                href="https://polarfox.io/litepaper" // TODO: Put the litepaper URL here
+                href={isPfx ? 'https://polarfox.io/litepaper' : 'https://akita.network'} // TODO: Put the litepaper URL here
                 target="_blank"
               >
-                <TYPE.white fontSize={14}>Read more about PFX</TYPE.white>
+                <TYPE.white fontSize={14}>Read more about {isPfx ? 'PFX' : 'gAKITA'}</TYPE.white>
               </ExternalLink>
             </AutoColumn>
           </CardSection>
