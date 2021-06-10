@@ -53,7 +53,7 @@ export default function PfxBalanceContent({ setShowPfxBalanceModal }: { setShowP
   const wavax = WAVAX[chainId ? chainId : 43114]
   const [, avaxPfxTokenPair] = usePair(wavax, pfx)
   const oneToken = JSBI.BigInt(1000000000000000000)
-  let pfxPrice: Number | undefined
+  let pfxPrice: number | undefined
   if (avaxPfxTokenPair && pfx) {
     const avaxPfxRatio = JSBI.divide(
       JSBI.multiply(oneToken, avaxPfxTokenPair.reserveOf(wavax).raw),

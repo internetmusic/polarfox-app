@@ -65,6 +65,6 @@ export default function CurrencyLogo({
   if (currency && (currency.symbol === 'AKITA' || currency.symbol === 'gAKITA')) {
     return <StyledEthereumLogo src={AkitaLogo} size={size} style={style} />
   }
-  
+
   return <StyledLogo size={size} srcs={srcs} alt={`${currency?.symbol ?? 'token'} logo`} style={style} />
 }
