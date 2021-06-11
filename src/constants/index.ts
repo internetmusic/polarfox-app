@@ -43,7 +43,7 @@ export const gAKITA: { [chainId in ChainId]: Token } = {
     'gAKITA',
     'Akita Inu Governance Token'
   ),
-  [ChainId.AVALANCHE]: new Token(ChainId.AVALANCHE, ZERO_ADDRESS, 18, 'gAKITA', 'Akita Inu') // TODO: Wrong address, must update
+  [ChainId.AVALANCHE]: new Token(ChainId.AVALANCHE, ZERO_ADDRESS, 18, 'gAKITA', 'Akita Inu Governance Token') // TODO: Wrong address, must update
 }
 
 // Test tokens
