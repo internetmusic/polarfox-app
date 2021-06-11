@@ -5,7 +5,8 @@ import {
   PFX_STAKING_REWARDS_INFO,
   GAKITA_STAKING_REWARDS_INFO,
   usePfxStakingInfo,
-  useGAkitaStakingInfo
+  useGAkitaStakingInfo,
+  StakingInfo
 } from '../../state/stake/hooks'
 import { TYPE, ExternalLink } from '../../theme'
 import PoolCard from '../../components/earn/PoolCard'
@@ -13,8 +14,9 @@ import { RowBetween } from '../../components/Row'
 import { CardSection, DataCard, CardNoise, CardBGImage } from '../../components/earn/styled'
 import Loader from '../../components/Loader'
 import { useActiveWeb3React } from '../../hooks'
-import { JSBI } from '@polarfox/sdk'
+import { ChainId, JSBI, Token } from '@polarfox/sdk'
 import { Countdown } from '../../components/earn/Countdown'
+import { gAKITA, PFX } from '../../constants'
 
 const PageWrapper = styled(AutoColumn)`
   max-width: 640px;
@@ -35,20 +37,21 @@ const PoolSection = styled.div`
   justify-self: center;
 `
 
-export function Earn(isPfx: boolean) {
-  const stakingRewardsInfo = isPfx ? PFX_STAKING_REWARDS_INFO : GAKITA_STAKING_REWARDS_INFO
-  const stakingInfoGetter = isPfx ? usePfxStakingInfo : useGAkitaStakingInfo
+const DataRow = styled(RowBetween)`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex-direction: column;
+  `};
+`
 
-  const { chainId } = useActiveWeb3React()
-  const stakingInfos = stakingInfoGetter()
+interface EarnProps {
+  rewardToken: Token
+  rewardTokenUrl: string
+  stakingInfo: StakingInfo[]
+  hasStakingRewards: boolean
+}
 
-  const DataRow = styled(RowBetween)`
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-     flex-direction: column;
-   `};
-  `
-
-  const stakingRewardsExist = Boolean(typeof chainId === 'number' && (stakingRewardsInfo[chainId]?.length ?? 0) > 0)
+function Earn({ rewardToken, rewardTokenUrl, stakingInfo, hasStakingRewards }: EarnProps) {
+  const poolGroup = rewardToken.symbol?.toLowerCase() || ''
 
   return (
     <PageWrapper gap="lg" justify="center">
@@ -59,20 +62,20 @@ export function Earn(isPfx: boolean) {
           <CardSection>
             <AutoColumn gap="md">
               <RowBetween>
-                <TYPE.white fontWeight={600}>{isPfx ? 'Polarfox' : 'gAKITA'} liquidity mining</TYPE.white>
+                <TYPE.white fontWeight={600}>{rewardToken.name} liquidity mining</TYPE.white>
               </RowBetween>
               <RowBetween>
                 <TYPE.white fontSize={14}>
-                  Deposit your Polarfox Liquidity Provider PFX-LP tokens to receive{' '}
-                  {isPfx ? 'PFX, the Polarfox' : 'gAKITA, the Akita Inu'} governance token.
+                  Deposit your Polarfox Liquidity Provider PFX-LP tokens to receive {rewardToken.symbol}, the{' '}
+                  {rewardToken.name} governance token.
                 </TYPE.white>
               </RowBetween>{' '}
               <ExternalLink
                 style={{ color: 'white', textDecoration: 'underline' }}
-                href={isPfx ? 'https://polarfox.io/litepaper' : 'https://akita.network'} // TODO: Put the litepaper URL here
+                href={rewardTokenUrl}
                 target="_blank"
               >
-                <TYPE.white fontSize={14}>Read more about {isPfx ? 'PFX' : 'gAKITA'}</TYPE.white>
+                <TYPE.white fontSize={14}>Read more about {rewardToken.symbol}</TYPE.white>
               </ExternalLink>
             </AutoColumn>
           </CardSection>
@@ -84,16 +87,16 @@ export function Earn(isPfx: boolean) {
       <AutoColumn gap="lg" style={{ width: '100%', maxWidth: '720px' }}>
         <DataRow style={{ alignItems: 'baseline' }}>
           <TYPE.mediumHeader style={{ marginTop: '0.5rem' }}>Participating pools</TYPE.mediumHeader>
-          <Countdown exactEnd={stakingInfos?.[0]?.periodFinish} />
+          <Countdown exactEnd={stakingInfo?.[0]?.periodFinish} />
         </DataRow>
 
         <PoolSection>
-          {stakingRewardsExist && stakingInfos?.length === 0 ? (
+          {hasStakingRewards && stakingInfo?.length === 0 ? (
             <Loader style={{ margin: 'auto' }} />
-          ) : !stakingRewardsExist ? (
+          ) : !hasStakingRewards ? (
             'No active rewards'
           ) : (
-            stakingInfos
+            stakingInfo
               ?.sort(function(infoA, infoB) {
                 // greater stake in avax comes first
                 return infoA.totalStakedInWavax?.greaterThan(infoB.totalStakedInWavax ?? JSBI.BigInt(0)) ? -1 : 1
@@ -113,8 +116,15 @@ export function Earn(isPfx: boolean) {
                   else return 0
                 }
               })
-              .map(stakingInfo => {
-                return <PoolCard key={stakingInfo.stakingRewardAddress} stakingInfo={stakingInfo} isPfx={isPfx} />
+              .map(info => {
+                return (
+                  <PoolCard
+                    key={info.stakingRewardAddress}
+                    stakingInfo={info}
+                    rewardToken={rewardToken}
+                    poolGroup={poolGroup}
+                  />
+                )
               })
           )}
         </PoolSection>
@@ -124,9 +134,41 @@ export function Earn(isPfx: boolean) {
 }
 
 export function EarnPfx() {
-  return Earn(true)
+  const pfxStakingInfo = usePfxStakingInfo()
+  const { chainId } = useActiveWeb3React()
+
+  const pfx = PFX[chainId ?? ChainId.AVALANCHE]
+
+  const stakingRewardsExist = Boolean(
+    typeof chainId === 'number' && (PFX_STAKING_REWARDS_INFO[chainId]?.length ?? 0) > 0
+  )
+
+  return (
+    <Earn
+      rewardToken={pfx}
+      rewardTokenUrl="https://polarfox.io/litepaper"
+      stakingInfo={pfxStakingInfo}
+      hasStakingRewards={stakingRewardsExist}
+    />
+  )
 }
 
 export function EarnGAkita() {
-  return Earn(false)
+  const gAkitaStakingInfo = useGAkitaStakingInfo()
+  const { chainId } = useActiveWeb3React()
+
+  const gAkita = gAKITA[chainId ?? ChainId.AVALANCHE]
+
+  const stakingRewardsExist = Boolean(
+    typeof chainId === 'number' && (GAKITA_STAKING_REWARDS_INFO[chainId]?.length ?? 0) > 0
+  )
+
+  return (
+    <Earn
+      rewardToken={gAkita}
+      rewardTokenUrl="https://polarfox.io/litepaper"
+      stakingInfo={gAkitaStakingInfo}
+      hasStakingRewards={stakingRewardsExist}
+    />
+  )
 }

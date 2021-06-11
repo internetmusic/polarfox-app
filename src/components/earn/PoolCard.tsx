@@ -12,7 +12,6 @@ import { currencyId } from '../../utils/currencyId'
 import { Break, CardNoise, CardBGImage } from './styled'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
 // import useUSDCPrice from '../../utils/useUSDCPrice'
-import { PFX, gAKITA } from '../../constants'
 
 const StatContainer = styled.div`
   display: flex;
@@ -71,11 +70,13 @@ const BottomSection = styled.div<{ showBackground: boolean }>`
   z-index: 1;
 `
 
-export default function PoolCard({ stakingInfo, isPfx }: { stakingInfo: StakingInfo; isPfx: boolean }) {
-  const rewardToken = isPfx ? PFX : gAKITA
-  const route = isPfx ? 'pfx' : 'gakita'
-  const rewardTokenSymbol = isPfx ? 'PFX' : 'gAKITA'
+interface PoolCardProps {
+  stakingInfo: StakingInfo
+  rewardToken: Token
+  poolGroup: string
+}
 
+export default function PoolCard({ stakingInfo, rewardToken, poolGroup }: PoolCardProps) {
   const token0 = stakingInfo.tokens[0]
   const token1 = stakingInfo.tokens[1]
 
@@ -89,7 +90,7 @@ export default function PoolCard({ stakingInfo, isPfx }: { stakingInfo: StakingI
   if (avaxPool) {
     token = currency0 === CAVAX ? token1 : token0
   } else {
-    token = token0.equals(rewardToken[token0.chainId]) ? token1 : token0
+    token = token0.equals(rewardToken) ? token1 : token0
   }
   // let valueOfTotalStakedAmountInUSDC: CurrencyAmount | undefined
   // get the color of the token
@@ -117,7 +118,7 @@ export default function PoolCard({ stakingInfo, isPfx }: { stakingInfo: StakingI
         </TYPE.white>
 
         <StyledInternalLink
-          to={`/${route}/${currencyId(currency0)}/${currencyId(currency1)}`}
+          to={`/${poolGroup}/${currencyId(currency0)}/${currencyId(currency1)}`}
           style={{ width: '100%' }}
         >
           <ButtonPrimary padding="8px" borderRadius="8px">
@@ -140,12 +141,13 @@ export default function PoolCard({ stakingInfo, isPfx }: { stakingInfo: StakingI
           <TYPE.white> Pool rate </TYPE.white>
           <TYPE.white>{`${weeklyRewardAmount.toFixed(0, {
             groupSeparator: ','
-          })} ${rewardTokenSymbol} / week`}</TYPE.white>
+          })} ${rewardToken.symbol} / week`}</TYPE.white>
         </RowBetween>
         <RowBetween>
           <TYPE.white> Current reward </TYPE.white>
-          <TYPE.white>{`${weeklyRewardPerAvax.toFixed(4, { groupSeparator: ',' }) ??
-            '-'} ${rewardTokenSymbol} / Week per AVAX`}</TYPE.white>
+          <TYPE.white>{`${weeklyRewardPerAvax.toFixed(4, { groupSeparator: ',' }) ?? '-'} ${
+            rewardToken.symbol
+          } / Week per AVAX`}</TYPE.white>
         </RowBetween>
       </StatContainer>
 
@@ -161,9 +163,9 @@ export default function PoolCard({ stakingInfo, isPfx }: { stakingInfo: StakingI
               <span role="img" aria-label="wizard-icon" style={{ marginRight: '0.5rem' }}>
                 ⚡
               </span>
-              {`${stakingInfo.rewardRate
-                ?.multiply(`${60 * 60 * 24 * 7}`)
-                ?.toSignificant(4, { groupSeparator: ',' })} ${rewardTokenSymbol} / week`}
+              {`${stakingInfo.rewardRate?.multiply(`${60 * 60 * 24 * 7}`)?.toSignificant(4, { groupSeparator: ',' })} ${
+                rewardToken.symbol
+              } / week`}
             </TYPE.black>
           </BottomSection>
         </>
