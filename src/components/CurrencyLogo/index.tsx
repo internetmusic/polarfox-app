@@ -62,7 +62,7 @@ export default function CurrencyLogo({
   }
 
   // TODO: Check the address to make sure this is not a fake AKITA / gAKITA
-  if (currency && (currency.symbol === 'AKITA' || currency.symbol === 'gAKITA')) {
+  if (currency?.symbol === 'AKITA' || currency?.symbol === 'gAKITA')) {
     return <StyledEthereumLogo src={AkitaLogo} size={size} style={style} />
   }
 
