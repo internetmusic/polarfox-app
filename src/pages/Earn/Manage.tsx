@@ -3,7 +3,7 @@ import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-import { JSBI, TokenAmount, CAVAX, Token, WAVAX, ChainId } from '@polarfox/sdk'
+import { JSBI, TokenAmount, CAVAX, Token, WAVAX, Pair, ChainId } from '@polarfox/sdk'
 import { RouteComponentProps } from 'react-router-dom'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { useCurrency } from '../../hooks/Tokens'
@@ -14,7 +14,7 @@ import { RowBetween } from '../../components/Row'
 import { CardSection, DataCard, CardNoise, CardBGImage } from '../../components/earn/styled'
 import { ButtonPrimary, ButtonEmpty } from '../../components/Button'
 import StakingModal from '../../components/earn/StakingModal'
-import { usePfxStakingInfo, useGAkitaStakingInfo } from '../../state/stake/hooks'
+import { usePfxStakingInfo, useGAkitaStakingInfo, StakingInfo } from '../../state/stake/hooks'
 import UnstakingModal from '../../components/earn/UnstakingModal'
 import ClaimRewardModal from '../../components/earn/ClaimRewardModal'
 import { useTokenBalance } from '../../state/wallet/hooks'
@@ -86,11 +86,14 @@ const DataRow = styled(RowBetween)`
      gap: 12px;
    `};
 `
-export function Manage(currencyIdA: string, currencyIdB: string, isPfx: boolean) {
-  const rewardToken = isPfx ? PFX : gAKITA
-  const rewardTokenSymbol = isPfx ? 'PFX' : 'gAKITA'
-  const stakingInfoGetter = isPfx ? usePfxStakingInfo : useGAkitaStakingInfo
+interface ManageProps {
+  currencyIdA: string
+  currencyIdB: string
+  rewardToken: Token
+  stakingInfoProvider: (pairToFilterBy: Pair | null) => StakingInfo[]
+}
 
+function Manage({ currencyIdA, currencyIdB, rewardToken, stakingInfoProvider }: ManageProps) {
   const { account, chainId } = useActiveWeb3React()
 
   // get currencies and pair
@@ -99,19 +102,17 @@ export function Manage(currencyIdA: string, currencyIdB: string, isPfx: boolean)
   const tokenB = wrappedCurrency(currencyB ?? undefined, chainId)
 
   const [, stakingTokenPair] = usePair(tokenA, tokenB)
-  const stakingInfo = stakingInfoGetter(stakingTokenPair)?.[0]
+  const stakingInfo = stakingInfoProvider(stakingTokenPair)?.[0]
 
   const avaxPool = currencyA === CAVAX || currencyB === CAVAX
-  const rewardTokenPool = chainId
-    ? tokenA === rewardToken[chainId] || tokenB === rewardToken[chainId]
-    : tokenA === rewardToken[ChainId.AVALANCHE] || tokenB === rewardToken[ChainId.AVALANCHE]
+  const rewardTokenPool = tokenA === rewardToken || tokenB === rewardToken
 
   let valueOfTotalStakedAmountInWavax: TokenAmount | undefined
   // let valueOfTotalStakedAmountInUSDC: CurrencyAmount | undefined
   let backgroundColor: string
   let token: Token | undefined
   const totalSupplyOfStakingToken = useTotalSupply(stakingInfo?.stakedAmount?.token)
-  const [, avaxRewardTokenPair] = usePair(CAVAX, rewardToken[chainId ? chainId : 43114])
+  const [, avaxRewardTokenPair] = usePair(CAVAX, rewardToken)
   // let usdToken: Token | undefined
 
   // One of the tokens is AVAX
@@ -222,6 +223,8 @@ export function Manage(currencyIdA: string, currencyIdB: string, isPfx: boolean)
   const countUpAmount = stakingInfo?.earnedAmount?.toFixed(6) ?? '0'
   const countUpAmountPrevious = usePrevious(countUpAmount) ?? '0'
 
+  const rewardSymbol = rewardToken.symbol ?? ''
+
   const toggleWalletModal = useWalletModalToggle()
 
   const handleDepositClick = useCallback(() => {
@@ -260,7 +263,7 @@ export function Manage(currencyIdA: string, currencyIdB: string, isPfx: boolean)
               {stakingInfo?.totalRewardRate
                 ?.multiply((60 * 60 * 24 * 7).toString())
                 ?.toFixed(0, { groupSeparator: ',' }) ?? '-'}
-              {` ${rewardTokenSymbol} / week`}
+              {` ${rewardSymbol} / week`}
             </TYPE.body>
           </AutoColumn>
         </PoolData>
@@ -303,19 +306,19 @@ export function Manage(currencyIdA: string, currencyIdB: string, isPfx: boolean)
             onDismiss={() => setShowStakingModal(false)}
             stakingInfo={stakingInfo}
             userLiquidityUnstaked={userLiquidityUnstaked}
-            isPfx={isPfx}
+            rewardSymbol={rewardSymbol}
           />
           <UnstakingModal
             isOpen={showUnstakingModal}
             onDismiss={() => setShowUnstakingModal(false)}
             stakingInfo={stakingInfo}
-            isPfx={isPfx}
+            rewardSymbol={rewardSymbol}
           />
           <ClaimRewardModal
             isOpen={showClaimRewardModal}
             onDismiss={() => setShowClaimRewardModal(false)}
             stakingInfo={stakingInfo}
-            isPfx={isPfx}
+            rewardSymbol={rewardSymbol}
           />
         </>
       )}
@@ -347,7 +350,7 @@ export function Manage(currencyIdA: string, currencyIdB: string, isPfx: boolean)
             <AutoColumn gap="sm">
               <RowBetween>
                 <div>
-                  <TYPE.black>Your unclaimed {rewardTokenSymbol}</TYPE.black>
+                  <TYPE.black>Your unclaimed {rewardSymbol}</TYPE.black>
                 </div>
                 {stakingInfo?.earnedAmount && JSBI.notEqual(BIG_INT_ZERO, stakingInfo?.earnedAmount?.raw) && (
                   <ButtonEmpty
@@ -379,7 +382,7 @@ export function Manage(currencyIdA: string, currencyIdB: string, isPfx: boolean)
                   {stakingInfo?.rewardRate
                     ?.multiply((60 * 60 * 24 * 7).toString())
                     ?.toSignificant(4, { groupSeparator: ',' }) ?? '-'}
-                  {` ${rewardTokenSymbol} / week`}
+                  {` ${rewardSymbol} / week`}
                 </TYPE.black>
               </RowBetween>
             </AutoColumn>
@@ -389,7 +392,7 @@ export function Manage(currencyIdA: string, currencyIdB: string, isPfx: boolean)
           <span role="img" aria-label="wizard-icon" style={{ marginRight: '8px' }}>
             ⭐️
           </span>
-          When you withdraw, the contract will automagically claim {rewardTokenSymbol} on your behalf!
+          When you withdraw, the contract will automagically claim {rewardSymbol} on your behalf!
         </TYPE.main>
 
         {!showAddLiquidityButton && (
@@ -425,7 +428,16 @@ export function ManagePfx({
     params: { currencyIdA, currencyIdB }
   }
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
-  return Manage(currencyIdA, currencyIdB, true)
+  const { chainId } = useActiveWeb3React()
+
+  return (
+    <Manage
+      currencyIdA={currencyIdA}
+      currencyIdB={currencyIdB}
+      rewardToken={PFX[chainId ?? ChainId.AVALANCHE]}
+      stakingInfoProvider={usePfxStakingInfo}
+    />
+  )
 }
 
 export function ManageGAkita({
@@ -433,5 +445,14 @@ export function ManageGAkita({
     params: { currencyIdA, currencyIdB }
   }
 }: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
-  return Manage(currencyIdA, currencyIdB, false)
+  const { chainId } = useActiveWeb3React()
+
+  return (
+    <Manage
+      currencyIdA={currencyIdA}
+      currencyIdB={currencyIdB}
+      rewardToken={gAKITA[chainId ?? ChainId.AVALANCHE]}
+      stakingInfoProvider={useGAkitaStakingInfo}
+    />
+  )
 }
