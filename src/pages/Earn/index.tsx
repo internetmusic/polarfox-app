@@ -48,9 +48,10 @@ interface EarnProps {
   rewardTokenUrl: string
   stakingInfo: StakingInfo[]
   hasStakingRewards: boolean
+  depositMessage: string
 }
 
-function Earn({ rewardToken, rewardTokenUrl, stakingInfo, hasStakingRewards }: EarnProps) {
+function Earn({ rewardToken, rewardTokenUrl, stakingInfo, hasStakingRewards, depositMessage }: EarnProps) {
   const poolGroup = rewardToken.symbol?.toLowerCase() || ''
 
   return (
@@ -65,10 +66,7 @@ function Earn({ rewardToken, rewardTokenUrl, stakingInfo, hasStakingRewards }: E
                 <TYPE.white fontWeight={600}>{rewardToken.name} liquidity mining</TYPE.white>
               </RowBetween>
               <RowBetween>
-                <TYPE.white fontSize={14}>
-                  Deposit your Polarfox Liquidity Provider PFX-LP tokens to receive {rewardToken.symbol}, the{' '}
-                  {rewardToken.name} governance token.
-                </TYPE.white>
+                <TYPE.white fontSize={14}>{depositMessage}</TYPE.white>
               </RowBetween>{' '}
               <ExternalLink
                 style={{ color: 'white', textDecoration: 'underline' }}
@@ -146,9 +144,10 @@ export function EarnPfx() {
   return (
     <Earn
       rewardToken={pfx}
-      rewardTokenUrl="https://polarfox.io/litepaper"
+      rewardTokenUrl="https://polarfox.io"
       stakingInfo={pfxStakingInfo}
       hasStakingRewards={stakingRewardsExist}
+      depositMessage="Deposit your Polarfox Liquidity Provider PFX-LP tokens to receive PFX, the Polarfox ecosystem governance token."
     />
   )
 }
@@ -166,9 +165,10 @@ export function EarnGAkita() {
   return (
     <Earn
       rewardToken={gAkita}
-      rewardTokenUrl="https://polarfox.io/litepaper"
+      rewardTokenUrl="https://akita.network"
       stakingInfo={gAkitaStakingInfo}
       hasStakingRewards={stakingRewardsExist}
+      depositMessage="Deposit your Polarfox Liquidity Provider PFX-LP tokens to receive gAkita, the Akita Inu governance token."
     />
   )
 }
