@@ -11,12 +11,14 @@ export const STAKING_GENESIS = 1600387200 // TODO: Update this - make it depend 
 
 export const REWARDS_DURATION_DAYS = 60
 
+export interface StakingRewardsInfo {
+  tokens: [Token, Token]
+  stakingRewardAddress: string
+}
+
 // TODO: Update all the staking rewards addresses here
 export const PFX_STAKING_REWARDS_INFO: {
-  [chainId in ChainId]?: {
-    tokens: [Token, Token]
-    stakingRewardAddress: string
-  }[]
+  [chainId in ChainId]?: StakingRewardsInfo[]
 } = {
   [ChainId.AVALANCHE]: [],
   [ChainId.FUJI]: [
@@ -36,10 +38,7 @@ export const PFX_STAKING_REWARDS_INFO: {
 }
 
 export const GAKITA_STAKING_REWARDS_INFO: {
-  [chainId in ChainId]?: {
-    tokens: [Token, Token]
-    stakingRewardAddress: string
-  }[]
+  [chainId in ChainId]?: StakingRewardsInfo[]
 } = {
   [ChainId.AVALANCHE]: [],
   [ChainId.FUJI]: [
@@ -139,9 +138,9 @@ const calculateTotalStakedAmountInAvax = function(
 }
 
 // gets the staking info from the network for the active chain id
-export function useStakingInfo(
+function useStakingInfo(
   stakingRewardsInfo: {
-    [chainId in ChainId]?: { tokens: [Token, Token]; stakingRewardAddress: string }[] | undefined
+    [chainId in ChainId]?: StakingRewardsInfo[] | undefined
   },
   pairToFilterBy?: Pair | null
 ): StakingInfo[] {

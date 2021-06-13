@@ -40,7 +40,7 @@ interface StakingModalProps {
   onDismiss: () => void
   stakingInfo: StakingInfo
   userLiquidityUnstaked: TokenAmount | undefined
-  isPfx: boolean
+  rewardSymbol: string
 }
 
 export default function StakingModal({
@@ -48,10 +48,8 @@ export default function StakingModal({
   onDismiss,
   stakingInfo,
   userLiquidityUnstaked,
-  isPfx
+  rewardSymbol
 }: StakingModalProps) {
-  const rewardTokenSymbol = isPfx ? 'PFX' : 'gAKITA'
-
   const { account, chainId, library } = useActiveWeb3React()
 
   // track and parse user input
@@ -228,7 +226,7 @@ export default function StakingModal({
 
             <TYPE.black>
               {hypotheticalRewardRate.multiply((60 * 60 * 24 * 7).toString()).toSignificant(4, { groupSeparator: ',' })}{' '}
-              {rewardTokenSymbol} / week
+              {rewardSymbol} / week
             </TYPE.black>
           </HypotheticalRewardRate>
 

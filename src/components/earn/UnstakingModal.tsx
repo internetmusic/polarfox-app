@@ -23,12 +23,10 @@ interface StakingModalProps {
   isOpen: boolean
   onDismiss: () => void
   stakingInfo: StakingInfo
-  isPfx: boolean
+  rewardSymbol: string
 }
 
-export default function UnstakingModal({ isOpen, onDismiss, stakingInfo, isPfx }: StakingModalProps) {
-  const rewardTokenSymbol = isPfx ? 'PFX' : 'gAKITA'
-
+export default function UnstakingModal({ isOpen, onDismiss, stakingInfo, rewardSymbol }: StakingModalProps) {
   const { account } = useActiveWeb3React()
 
   // monitor call to help UI loading state
@@ -91,13 +89,13 @@ export default function UnstakingModal({ isOpen, onDismiss, stakingInfo, isPfx }
               <TYPE.body fontWeight={600} fontSize={36}>
                 {<FormattedCurrencyAmount currencyAmount={stakingInfo?.earnedAmount} />}
               </TYPE.body>
-              <TYPE.body>Unclaimed {rewardTokenSymbol}</TYPE.body>
+              <TYPE.body>Unclaimed {rewardSymbol}</TYPE.body>
             </AutoColumn>
           )}
           <TYPE.subHeader style={{ textAlign: 'center' }}>
-            When you withdraw, your {rewardTokenSymbol} is claimed and your Polarfox Liquidity tokens, PFX-LP, are
-            returned to you. You will no longer earn {rewardTokenSymbol} rewards on this liquidity. Your original token
-            liquidity will remain in its liquidity pool.
+            When you withdraw, your {rewardSymbol} is claimed and your Polarfox Liquidity tokens, PFX-LP, are returned
+            to you. You will no longer earn {rewardSymbol} rewards on this liquidity. Your original token liquidity will
+            remain in its liquidity pool.
           </TYPE.subHeader>
           <GasFeeAlert></GasFeeAlert>
           <ButtonError disabled={!!error} error={!!error && !!stakingInfo?.stakedAmount} onClick={onWithdraw}>
@@ -110,7 +108,7 @@ export default function UnstakingModal({ isOpen, onDismiss, stakingInfo, isPfx }
           <AutoColumn gap="12px" justify={'center'}>
             <TYPE.body fontSize={20}>Withdrawing {stakingInfo?.stakedAmount?.toSignificant(4)} PFX-LP</TYPE.body>
             <TYPE.body fontSize={20}>
-              Claiming {stakingInfo?.earnedAmount?.toSignificant(4)} {rewardTokenSymbol}
+              Claiming {stakingInfo?.earnedAmount?.toSignificant(4)} {rewardSymbol}
             </TYPE.body>
           </AutoColumn>
         </LoadingView>
@@ -120,7 +118,7 @@ export default function UnstakingModal({ isOpen, onDismiss, stakingInfo, isPfx }
           <AutoColumn gap="12px" justify={'center'}>
             <TYPE.largeHeader>Transaction Submitted</TYPE.largeHeader>
             <TYPE.body fontSize={20}>Withdrew PFX-LP!</TYPE.body>
-            <TYPE.body fontSize={20}>Claimed {rewardTokenSymbol}!</TYPE.body>
+            <TYPE.body fontSize={20}>Claimed {rewardSymbol}!</TYPE.body>
           </AutoColumn>
         </SubmittedView>
       )}
