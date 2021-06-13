@@ -14,8 +14,8 @@ import {
   RedirectOldAddLiquidityPathStructure,
   RedirectToAddLiquidity
 } from './AddLiquidity/redirects'
-import Earn from './Earn'
-import Manage from './Earn/Manage'
+import { EarnPfx, EarnGAkita } from './Earn'
+import { ManagePfx, ManageGAkita } from './Earn/Manage'
 import Pool from './Pool'
 import PoolFinder from './PoolFinder'
 import RemoveLiquidity from './RemoveLiquidity'
@@ -83,8 +83,9 @@ export default function App() {
               <Route exact strict path="/send" component={RedirectPathToSwapOnly} />
               <Route exact strict path="/find" component={PoolFinder} />
               <Route exact strict path="/pool" component={Pool} />
-              <Route exact strict path="/pfx" component={Earn} />
+              <Route exact strict path="/pfx" component={EarnPfx} />
               <Route exact strict path="/vote" component={Vote} />
+              <Route exact strict path="/gakita" component={EarnGAkita} />
               <Route exact strict path="/airdrop" component={Airdrop} />
               <Route exact strict path="/create" component={RedirectToAddLiquidity} />
               <Route exact path="/add" component={AddLiquidity} />
@@ -95,7 +96,8 @@ export default function App() {
               <Route exact path="/create/:currencyIdA/:currencyIdB" component={RedirectDuplicateTokenIds} />
               <Route exact strict path="/remove/:tokens" component={RedirectOldRemoveLiquidityPathStructure} />
               <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
-              <Route exact strict path="/pfx/:currencyIdA/:currencyIdB" component={Manage} />
+              <Route exact strict path="/pfx/:currencyIdA/:currencyIdB" component={ManagePfx} />
+              <Route exact strict path="/gakita/:currencyIdA/:currencyIdB" component={ManageGAkita} />
               <Route exact strict path="/vote/:id" component={VotePage} />
               <Route component={RedirectPathToSwapOnly} />
             </Switch>

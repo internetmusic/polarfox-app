@@ -40,9 +40,16 @@ interface StakingModalProps {
   onDismiss: () => void
   stakingInfo: StakingInfo
   userLiquidityUnstaked: TokenAmount | undefined
+  rewardSymbol: string
 }
 
-export default function StakingModal({ isOpen, onDismiss, stakingInfo, userLiquidityUnstaked }: StakingModalProps) {
+export default function StakingModal({
+  isOpen,
+  onDismiss,
+  stakingInfo,
+  userLiquidityUnstaked,
+  rewardSymbol
+}: StakingModalProps) {
   const { account, chainId, library } = useActiveWeb3React()
 
   // track and parse user input
@@ -219,7 +226,7 @@ export default function StakingModal({ isOpen, onDismiss, stakingInfo, userLiqui
 
             <TYPE.black>
               {hypotheticalRewardRate.multiply((60 * 60 * 24 * 7).toString()).toSignificant(4, { groupSeparator: ',' })}{' '}
-              PFX / week
+              {rewardSymbol} / week
             </TYPE.black>
           </HypotheticalRewardRate>
 

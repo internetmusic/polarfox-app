@@ -3,7 +3,7 @@ import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-import { JSBI, TokenAmount, CAVAX, Token, WAVAX, ChainId } from '@polarfox/sdk'
+import { JSBI, TokenAmount, CAVAX, Token, WAVAX, Pair, ChainId } from '@polarfox/sdk'
 import { RouteComponentProps } from 'react-router-dom'
 import DoubleCurrencyLogo from '../../components/DoubleLogo'
 import { useCurrency } from '../../hooks/Tokens'
@@ -14,7 +14,7 @@ import { RowBetween } from '../../components/Row'
 import { CardSection, DataCard, CardNoise, CardBGImage } from '../../components/earn/styled'
 import { ButtonPrimary, ButtonEmpty } from '../../components/Button'
 import StakingModal from '../../components/earn/StakingModal'
-import { usePfxStakingInfo } from '../../state/stake/hooks'
+import { usePfxStakingInfo, useGAkitaStakingInfo, StakingInfo } from '../../state/stake/hooks'
 import UnstakingModal from '../../components/earn/UnstakingModal'
 import ClaimRewardModal from '../../components/earn/ClaimRewardModal'
 import { useTokenBalance } from '../../state/wallet/hooks'
@@ -28,7 +28,7 @@ import { useTotalSupply } from '../../data/TotalSupply'
 import { usePair } from '../../data/Reserves'
 import usePrevious from '../../hooks/usePrevious'
 // import useUSDCPrice from '../../utils/useUSDCPrice'
-import { BIG_INT_ZERO, PFX } from '../../constants'
+import { BIG_INT_ZERO, PFX, gAKITA } from '../../constants'
 
 const PageWrapper = styled(AutoColumn)`
   max-width: 640px;
@@ -86,12 +86,14 @@ const DataRow = styled(RowBetween)`
      gap: 12px;
    `};
 `
+interface ManageProps {
+  currencyIdA: string
+  currencyIdB: string
+  rewardToken: Token
+  stakingInfoProvider: (pairToFilterBy: Pair | null) => StakingInfo[]
+}
 
-export default function Manage({
-  match: {
-    params: { currencyIdA, currencyIdB }
-  }
-}: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
+function Manage({ currencyIdA, currencyIdB, rewardToken, stakingInfoProvider }: ManageProps) {
   const { account, chainId } = useActiveWeb3React()
 
   // get currencies and pair
@@ -100,19 +102,17 @@ export default function Manage({
   const tokenB = wrappedCurrency(currencyB ?? undefined, chainId)
 
   const [, stakingTokenPair] = usePair(tokenA, tokenB)
-  const stakingInfo = usePfxStakingInfo(stakingTokenPair)?.[0]
+  const stakingInfo = stakingInfoProvider(stakingTokenPair)?.[0]
 
   const avaxPool = currencyA === CAVAX || currencyB === CAVAX
-  const pfxPool = chainId
-    ? tokenA === PFX[chainId] || tokenB === PFX[chainId]
-    : tokenA === PFX[ChainId.AVALANCHE] || tokenB === PFX[ChainId.AVALANCHE]
+  const rewardTokenPool = tokenA === rewardToken || tokenB === rewardToken
 
   let valueOfTotalStakedAmountInWavax: TokenAmount | undefined
   // let valueOfTotalStakedAmountInUSDC: CurrencyAmount | undefined
   let backgroundColor: string
   let token: Token | undefined
   const totalSupplyOfStakingToken = useTotalSupply(stakingInfo?.stakedAmount?.token)
-  const [, avaxPfxTokenPair] = usePair(CAVAX, PFX[chainId ? chainId : 43114])
+  const [, avaxRewardTokenPair] = usePair(CAVAX, rewardToken)
   // let usdToken: Token | undefined
 
   // One of the tokens is AVAX
@@ -139,41 +139,44 @@ export default function Manage({
     // usdToken = wavax
   }
 
-  // One of the tokens is PFX
-  else if (pfxPool) {
-    let pfx
+  // One of the tokens is PFX / AKITA
+  else if (rewardTokenPool) {
+    let pfxAkita
     if (tokenA && tokenA.equals(PFX[tokenA.chainId])) {
       token = tokenB
-      pfx = tokenA
+      pfxAkita = tokenA
     } else {
       token = tokenA
-      pfx = tokenB
+      pfxAkita = tokenB
     }
 
-    if (totalSupplyOfStakingToken && stakingTokenPair && avaxPfxTokenPair && tokenB && pfx) {
+    if (totalSupplyOfStakingToken && stakingTokenPair && avaxRewardTokenPair && tokenB && pfxAkita) {
       const oneToken = JSBI.BigInt(1000000000000000000)
-      const avaxPfxRatio = JSBI.divide(
-        JSBI.multiply(oneToken, avaxPfxTokenPair.reserveOf(WAVAX[tokenB.chainId]).raw),
-        avaxPfxTokenPair.reserveOf(pfx).raw
+      const avaxPfxAkitaRatio = JSBI.divide(
+        JSBI.multiply(oneToken, avaxRewardTokenPair.reserveOf(WAVAX[tokenB.chainId]).raw),
+        avaxRewardTokenPair.reserveOf(pfxAkita).raw
       )
 
-      const valueOfPfxInAvax = JSBI.divide(JSBI.multiply(stakingTokenPair.reserveOf(pfx).raw, avaxPfxRatio), oneToken)
+      const valueOfPfxAkitaInAvax = JSBI.divide(
+        JSBI.multiply(stakingTokenPair.reserveOf(pfxAkita).raw, avaxPfxAkitaRatio),
+        oneToken
+      )
 
       valueOfTotalStakedAmountInWavax = new TokenAmount(
         WAVAX[tokenB.chainId],
         JSBI.divide(
           JSBI.multiply(
-            JSBI.multiply(stakingInfo.totalStakedAmount.raw, valueOfPfxInAvax),
+            JSBI.multiply(stakingInfo.totalStakedAmount.raw, valueOfPfxAkitaInAvax),
             JSBI.BigInt(2) // this is b/c the value of LP shares are ~double the value of the wavax they entitle owner to
           ),
           totalSupplyOfStakingToken.raw
         )
       )
     }
-    // usdToken = pfx
+    // usdToken = pfxAkita
   }
 
-  // None of the tokens is AVAX nor PFX
+  // None of the tokens is AVAX nor PFX / AKITA
   else {
     if (tokenB) {
       // TODO: Improve. This just sets the value to 0, but it does not necessarily have no value
@@ -220,6 +223,8 @@ export default function Manage({
   const countUpAmount = stakingInfo?.earnedAmount?.toFixed(6) ?? '0'
   const countUpAmountPrevious = usePrevious(countUpAmount) ?? '0'
 
+  const rewardSymbol = rewardToken.symbol ?? ''
+
   const toggleWalletModal = useWalletModalToggle()
 
   const handleDepositClick = useCallback(() => {
@@ -258,7 +263,7 @@ export default function Manage({
               {stakingInfo?.totalRewardRate
                 ?.multiply((60 * 60 * 24 * 7).toString())
                 ?.toFixed(0, { groupSeparator: ',' }) ?? '-'}
-              {' PFX / week'}
+              {` ${rewardSymbol} / week`}
             </TYPE.body>
           </AutoColumn>
         </PoolData>
@@ -301,16 +306,19 @@ export default function Manage({
             onDismiss={() => setShowStakingModal(false)}
             stakingInfo={stakingInfo}
             userLiquidityUnstaked={userLiquidityUnstaked}
+            rewardSymbol={rewardSymbol}
           />
           <UnstakingModal
             isOpen={showUnstakingModal}
             onDismiss={() => setShowUnstakingModal(false)}
             stakingInfo={stakingInfo}
+            rewardSymbol={rewardSymbol}
           />
           <ClaimRewardModal
             isOpen={showClaimRewardModal}
             onDismiss={() => setShowClaimRewardModal(false)}
             stakingInfo={stakingInfo}
+            rewardSymbol={rewardSymbol}
           />
         </>
       )}
@@ -342,7 +350,7 @@ export default function Manage({
             <AutoColumn gap="sm">
               <RowBetween>
                 <div>
-                  <TYPE.black>Your unclaimed PFX</TYPE.black>
+                  <TYPE.black>Your unclaimed {rewardSymbol}</TYPE.black>
                 </div>
                 {stakingInfo?.earnedAmount && JSBI.notEqual(BIG_INT_ZERO, stakingInfo?.earnedAmount?.raw) && (
                   <ButtonEmpty
@@ -374,7 +382,7 @@ export default function Manage({
                   {stakingInfo?.rewardRate
                     ?.multiply((60 * 60 * 24 * 7).toString())
                     ?.toSignificant(4, { groupSeparator: ',' }) ?? '-'}
-                  {' PFX / week'}
+                  {` ${rewardSymbol} / week`}
                 </TYPE.black>
               </RowBetween>
             </AutoColumn>
@@ -384,7 +392,7 @@ export default function Manage({
           <span role="img" aria-label="wizard-icon" style={{ marginRight: '8px' }}>
             ⭐️
           </span>
-          When you withdraw, the contract will automagically claim PFX on your behalf!
+          When you withdraw, the contract will automagically claim {rewardSymbol} on your behalf!
         </TYPE.main>
 
         {!showAddLiquidityButton && (
@@ -412,5 +420,39 @@ export default function Manage({
         )}
       </PositionInfo>
     </PageWrapper>
+  )
+}
+
+export function ManagePfx({
+  match: {
+    params: { currencyIdA, currencyIdB }
+  }
+}: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
+  const { chainId } = useActiveWeb3React()
+
+  return (
+    <Manage
+      currencyIdA={currencyIdA}
+      currencyIdB={currencyIdB}
+      rewardToken={PFX[chainId ?? ChainId.AVALANCHE]}
+      stakingInfoProvider={usePfxStakingInfo}
+    />
+  )
+}
+
+export function ManageGAkita({
+  match: {
+    params: { currencyIdA, currencyIdB }
+  }
+}: RouteComponentProps<{ currencyIdA: string; currencyIdB: string }>) {
+  const { chainId } = useActiveWeb3React()
+
+  return (
+    <Manage
+      currencyIdA={currencyIdA}
+      currencyIdB={currencyIdB}
+      rewardToken={gAKITA[chainId ?? ChainId.AVALANCHE]}
+      stakingInfoProvider={useGAkitaStakingInfo}
+    />
   )
 }

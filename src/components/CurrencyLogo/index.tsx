@@ -4,6 +4,7 @@ import styled from 'styled-components'
 
 import AvaxLogo from '../../assets/images/avalanche_token_round.png'
 import PfxLogo from '../../assets/images/pfx-logo.png'
+import AkitaLogo from '../../assets/images/akita-logo.png'
 
 import useHttpLocations from '../../hooks/useHttpLocations'
 import { WrappedTokenInfo } from '../../state/lists/hooks'
@@ -55,8 +56,14 @@ export default function CurrencyLogo({
     return <StyledEthereumLogo src={AvaxLogo} size={size} style={style} />
   }
 
-  if (currency && currency.symbol === 'PFX') {
+  // TODO: Check the address to make sure this is not a fake PFX
+  if (currency?.symbol === 'PFX') {
     return <StyledEthereumLogo src={PfxLogo} size={size} style={style} />
+  }
+
+  // TODO: Check the address to make sure this is not a fake AKITA / gAKITA
+  if (currency?.symbol === 'AKITA' || currency?.symbol === 'gAKITA') {
+    return <StyledEthereumLogo src={AkitaLogo} size={size} style={style} />
   }
 
   return <StyledLogo size={size} srcs={srcs} alt={`${currency?.symbol ?? 'token'} logo`} style={style} />
