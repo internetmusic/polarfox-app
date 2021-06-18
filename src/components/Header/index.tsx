@@ -25,7 +25,7 @@ import Web3Status from '../Web3Status'
 import Modal from '../Modal'
 import PfxBalanceContent from './PfxBalanceContent'
 import usePrevious from '../../hooks/usePrevious'
-import { ANALYTICS_PAGE } from '../../constants'
+import { ANALYTICS_PAGE, FORUM_PAGE } from '../../constants'
 
 const HeaderFrame = styled.div`
   display: grid;
@@ -311,7 +311,7 @@ export default function Header() {
           <StyledExternalLink id={`info-nav-link`} href={ANALYTICS_PAGE}>
             Charts <span style={{ fontSize: '11px' }}>↗</span>
           </StyledExternalLink>
-          <StyledExternalLink id={`gov-nav-link`} href={'https://gov.polarfox.io'}>
+          <StyledExternalLink id={`gov-nav-link`} href={FORUM_PAGE}>
             Forum <span style={{ fontSize: '11px' }}>↗</span>
           </StyledExternalLink>
         </HeaderLinks>

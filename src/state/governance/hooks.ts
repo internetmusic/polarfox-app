@@ -1,4 +1,4 @@
-import { UNI } from './../../constants/index'
+import { PFX } from './../../constants/index'
 import { TokenAmount } from '@polarfox/sdk'
 import { isAddress } from 'ethers/lib/utils'
 import { useGovernanceContract, usePfxContract } from '../../hooks/useContract'
@@ -151,34 +151,34 @@ export function useProposalData(id: string): ProposalData | undefined {
 // get the users delegatee if it exists
 export function useUserDelegatee(): string {
   const { account } = useActiveWeb3React()
-  const uniContract = usePfxContract()
-  const { result } = useSingleCallResult(uniContract, 'delegates', [account ?? undefined])
+  const pfxContract = usePfxContract()
+  const { result } = useSingleCallResult(pfxContract, 'delegates', [account ?? undefined])
   return result?.[0] ?? undefined
 }
 
 export function useUserVotes(): TokenAmount | undefined {
   const { account, chainId } = useActiveWeb3React()
-  const uniContract = usePfxContract()
+  const pfxContract = usePfxContract()
 
   // check for available votes
-  const uni = chainId ? UNI[chainId] : undefined
-  const votes = useSingleCallResult(uniContract, 'getCurrentVotes', [account ?? undefined])?.result?.[0]
-  return votes && uni ? new TokenAmount(uni, votes) : undefined
+  const pfx = chainId ? PFX[chainId] : undefined
+  const votes = useSingleCallResult(pfxContract, 'getCurrentVotes', [account ?? undefined])?.result?.[0]
+  return votes && pfx ? new TokenAmount(pfx, votes) : undefined
 }
 
 export function useDelegateCallback(): (delegatee: string | undefined) => undefined | Promise<string> {
   const { account, chainId, library } = useActiveWeb3React()
   const addTransaction = useTransactionAdder()
 
-  const uniContract = usePfxContract()
+  const pfxContract = usePfxContract()
 
   return useCallback(
     (delegatee: string | undefined) => {
       if (!library || !chainId || !account || !isAddress(delegatee ?? '')) return undefined
       const args = [delegatee]
-      if (!uniContract) throw new Error('No UNI Contract!')
-      return uniContract.estimateGas.delegate(...args, {}).then(estimatedGasLimit => {
-        return uniContract
+      if (!pfxContract) throw new Error('No PFX Contract!')
+      return pfxContract.estimateGas.delegate(...args, {}).then(estimatedGasLimit => {
+        return pfxContract
           .delegate(...args, { value: null, gasLimit: calculateGasMargin(estimatedGasLimit) })
           .then((response: TransactionResponse) => {
             addTransaction(response, {
@@ -188,7 +188,7 @@ export function useDelegateCallback(): (delegatee: string | undefined) => undefi
           })
       })
     },
-    [account, addTransaction, chainId, library, uniContract]
+    [account, addTransaction, chainId, library, pfxContract]
   )
 }
 

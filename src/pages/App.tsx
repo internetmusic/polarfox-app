@@ -22,8 +22,6 @@ import RemoveLiquidity from './RemoveLiquidity'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import Swap from './Swap'
 import { RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
-import Airdrop from './Airdrop'
-
 import Vote from './Vote'
 import VotePage from './Vote/VotePage'
 
@@ -86,7 +84,6 @@ export default function App() {
               <Route exact strict path="/pfx" component={EarnPfx} />
               <Route exact strict path="/vote" component={Vote} />
               <Route exact strict path="/gakita" component={EarnGAkita} />
-              <Route exact strict path="/airdrop" component={Airdrop} />
               <Route exact strict path="/create" component={RedirectToAddLiquidity} />
               <Route exact path="/add" component={AddLiquidity} />
               <Route exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />

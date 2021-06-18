@@ -2,7 +2,6 @@ import { Contract } from '@ethersproject/contracts'
 import { WAVAX } from '@polarfox/sdk'
 import { abi as IPolarfoxPairABI } from '@polarfox/core/build/IPolarfoxPair.json'
 import { abi as STAKING_REWARDS_ABI } from '@polarfox/core/build/StakingRewards.json'
-// import { abi as AIRDROP_ABI } from '@polarfox/governance/artifacts/contracts/Airdrop.sol/Airdrop.json'
 import { abi as GOVERNANCE_ABI } from '@polarfox/governance/artifacts/contracts/GovernorAlpha.sol/GovernorAlpha.json'
 import { abi as PFX_ABI } from '@polarfox/governance/artifacts/contracts/PFX.sol/Pfx.json'
 import { useMemo } from 'react'
@@ -83,8 +82,4 @@ export function usePfxContract(): Contract | null {
 
 export function useStakingContract(stakingAddress?: string, withSignerIfPossible?: boolean): Contract | null {
   return useContract(stakingAddress, STAKING_REWARDS_ABI, withSignerIfPossible)
-}
-
-export function useAirdropContract(): Contract | null {
-  return null // TODO reactive Airdrop
 }

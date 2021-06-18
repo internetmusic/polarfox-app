@@ -16,8 +16,7 @@ const TREASURY_END_YEAR_3 = TREASURY_BEGIN_PERIOD_3 + FOUR_YEARS
 const TREASURY_BEGIN_PERIOD_4 = TREASURY_END_YEAR_3
 const TREASURY_END_YEAR_4 = TREASURY_BEGIN_PERIOD_4 + FOUR_YEARS
 
-const AIRDROP_AMOUNT = 26_000_000
-const TREASURY_PERIOD_1_AMOUNT = 256_000_000
+const TREASURY_PERIOD_1_AMOUNT = 256_000_000 // TODO: Update
 const TREASURY_PERIOD_2_AMOUNT = 128_000_000
 const TREASURY_PERIOD_3_AMOUNT = 64_000_000
 const TREASURY_PERIOD_4_AMOUNT = 32_000_000
@@ -41,8 +40,10 @@ function withVesting(before: JSBI, time: BigNumber, amount: number, start: numbe
   return before
 }
 
+// TODO: Make sure this works
 export function computePfxCirculation(pfx: Token, blockTimestamp: BigNumber): TokenAmount {
-  let wholeAmount = JSBI.BigInt(AIRDROP_AMOUNT)
+  // let wholeAmount = JSBI.BigInt(AIRDROP_AMOUNT)
+  let wholeAmount = JSBI.BigInt(0)
 
   // treasury vesting
   wholeAmount = withVesting(
