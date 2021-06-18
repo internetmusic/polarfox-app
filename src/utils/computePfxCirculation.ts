@@ -1,7 +1,7 @@
 import { JSBI, Token, TokenAmount } from '@polarfox/sdk'
 import { BigNumber } from 'ethers'
 
-const TREASURY_VESTING_GENESIS = 1612899125 // TODO: Update this and everything else in this file
+const TREASURY_VESTING_GENESIS = 1612899125 // TODO: Update
 
 const FOUR_YEARS: number = 60 * 60 * 24 * 365 * 4
 const TREASURY_BEGIN_PERIOD_1 = TREASURY_VESTING_GENESIS
@@ -16,10 +16,11 @@ const TREASURY_END_YEAR_3 = TREASURY_BEGIN_PERIOD_3 + FOUR_YEARS
 const TREASURY_BEGIN_PERIOD_4 = TREASURY_END_YEAR_3
 const TREASURY_END_YEAR_4 = TREASURY_BEGIN_PERIOD_4 + FOUR_YEARS
 
+const PRESALE_AMOUNT = 9_250_000 // TODO: Update
 const TREASURY_PERIOD_1_AMOUNT = 256_000_000 // TODO: Update
-const TREASURY_PERIOD_2_AMOUNT = 128_000_000
-const TREASURY_PERIOD_3_AMOUNT = 64_000_000
-const TREASURY_PERIOD_4_AMOUNT = 32_000_000
+const TREASURY_PERIOD_2_AMOUNT = 128_000_000 // TODO: Update
+const TREASURY_PERIOD_3_AMOUNT = 64_000_000 // TODO: Update
+const TREASURY_PERIOD_4_AMOUNT = 32_000_000 // TODO: Update
 
 function withVesting(before: JSBI, time: BigNumber, amount: number, start: number, end: number, cliff?: number) {
   if (time.gt(start)) {
@@ -42,8 +43,7 @@ function withVesting(before: JSBI, time: BigNumber, amount: number, start: numbe
 
 // TODO: Make sure this works
 export function computePfxCirculation(pfx: Token, blockTimestamp: BigNumber): TokenAmount {
-  // let wholeAmount = JSBI.BigInt(AIRDROP_AMOUNT)
-  let wholeAmount = JSBI.BigInt(0)
+  let wholeAmount = JSBI.BigInt(PRESALE_AMOUNT)
 
   // treasury vesting
   wholeAmount = withVesting(
