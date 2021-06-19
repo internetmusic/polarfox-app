@@ -2395,6 +2395,11 @@
     hash.js "^1.1.7"
     randombytes "^2.1.0"
 
+"@polarfox/akita-governance@1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@polarfox/akita-governance/-/akita-governance-1.0.6.tgz#af5dfb627c4eaf881597b73d15d0f448eb1c52af"
+  integrity sha512-a7KnsVLCCQSOd2z/O4Ra01RGOqzw5+iqU1wypBUIje2x1dB8hwHywhBWTq5kCyobooU+G2LhOgFddLfqiKeXUA==
+
 "@polarfox/core@2.3.2", "@polarfox/core@^2.3.2":
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/@polarfox/core/-/core-2.3.2.tgz#1d172ec5e8e7e13b516e5ac107ac6fec868b8e2d"
@@ -18462,8 +18467,10 @@ watchpack@^1.6.0:
   resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.7.5.tgz#1267e6c55e0b9b5be44c2023aed5437a2c26c453"
   integrity sha512-9P3MWk6SrKjHsGkLT2KHXdQ/9SNkyoJbabxnKOoJepsvJjJG8uYTR3yTPxPQvNDI3w4Nz1xnE0TLHK4RIVe/MQ==
   dependencies:
+    chokidar "^3.4.1"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
+    watchpack-chokidar2 "^2.0.1"
   optionalDependencies:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"

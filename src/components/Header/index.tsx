@@ -302,11 +302,14 @@ export default function Header() {
           <StyledNavLink id={`stake-nav-link`} to={'/pfx'}>
             PFX
           </StyledNavLink>
-          <StyledNavLink id={`stake-nav-link`} to={'/vote'}>
-            Vote
+          <StyledNavLink id={`stake-nav-link`} to={'/vote-pfx'}>
+            PFX Governance
           </StyledNavLink>
           <StyledNavLink id={`stake-nav-link`} to={'/gakita'}>
             gAKITA
+          </StyledNavLink>
+          <StyledNavLink id={`stake-nav-link`} to={'/vote-gakita'}>
+            AKITA Governance
           </StyledNavLink>
           <StyledExternalLink id={`info-nav-link`} href={ANALYTICS_PAGE}>
             Charts <span style={{ fontSize: '11px' }}>↗</span>

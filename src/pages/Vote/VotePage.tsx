@@ -9,14 +9,25 @@ import { CardSection, DataCard } from '../../components/earn/styled'
 import { ArrowLeft } from 'react-feather'
 import { ButtonPrimary } from '../../components/Button'
 import { ProposalStatus } from './styled'
-import { useProposalData, useUserVotes, useUserDelegatee, ProposalData } from '../../state/governance/hooks'
+import {
+  ProposalData,
+  useGAkitaProposalData,
+  useGAkitaUserDelegatee,
+  useGAkitaUserVotes,
+  useGAkitaVoteCallback,
+  usePfxProposalData,
+  usePfxUserDelegatee,
+  usePfxUserVotes,
+  usePfxVoteCallback,
+  VoteCallback
+} from '../../state/governance/hooks'
 import { DateTime } from 'luxon'
 import ReactMarkdown from 'react-markdown'
 import VoteModal from '../../components/vote/VoteModal'
-import { TokenAmount, JSBI } from '@polarfox/sdk'
+import { TokenAmount, JSBI, Token, ChainId } from '@polarfox/sdk'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { useActiveWeb3React } from '../../hooks'
-import { PFX, ZERO_ADDRESS } from '../../constants'
+import { gAKITA, PFX, ZERO_ADDRESS } from '../../constants'
 import { isAddress, getEtherscanLink } from '../../utils'
 
 const PageWrapper = styled(AutoColumn)`
@@ -92,15 +103,19 @@ const DetailText = styled.div`
   word-break: break-all;
 `
 
-export default function VotePage({
-  match: {
-    params: { id }
-  }
-}: RouteComponentProps<{ id: string }>) {
+interface VotePageProps {
+  token?: Token
+  proposalData?: ProposalData
+  userVotes?: TokenAmount
+  userDelegatee?: string
+  voteRootPath: string
+  voteCallback: VoteCallback
+}
+
+function VotePage({ token, proposalData, userVotes, userDelegatee, voteRootPath, voteCallback }: VotePageProps) {
   const { account, chainId } = useActiveWeb3React()
 
   // get data for this specific proposal
-  const proposalData: ProposalData | undefined = useProposalData(id)
 
   // update support based on button interactions
   const [support, setSupport] = useState<boolean>(true)
@@ -124,11 +139,9 @@ export default function VotePage({
     proposalData && totalVotes ? ((proposalData.againstCount * 100) / totalVotes).toFixed(0) + '%' : '0%'
 
   // show delegation option if they have have a balance, have not delegated
-  const availableVotes: TokenAmount | undefined = useUserVotes()
-  const uniBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, chainId ? PFX[chainId] : undefined)
-  const userDelegatee: string | undefined = useUserDelegatee()
+  const tokenBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, token)
   const showUnlockVoting = Boolean(
-    uniBalance && JSBI.notEqual(uniBalance.raw, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS
+    tokenBalance && JSBI.notEqual(tokenBalance.raw, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS
   )
 
   // show links in propsoal details if content is an address
@@ -143,13 +156,15 @@ export default function VotePage({
     <PageWrapper gap="lg" justify="center">
       <VoteModal
         isOpen={showModal}
-        onDismiss={() => setShowModal(false)}
         proposalId={proposalData?.id}
         support={support}
+        voteCallback={voteCallback}
+        userVotes={userVotes}
+        onDismiss={() => setShowModal(false)}
       />
       <ProposalInfo gap="lg" justify="start">
         <RowBetween style={{ width: '100%' }}>
-          <ArrowWrapper to="/vote">
+          <ArrowWrapper to={voteRootPath}>
             <ArrowLeft size={20} /> All Proposals
           </ArrowWrapper>
           {proposalData && <ProposalStatus status={proposalData?.status ?? ''}>{proposalData?.status}</ProposalStatus>}
@@ -176,8 +191,8 @@ export default function VotePage({
           </RowBetween>
         </AutoColumn>
         {!showUnlockVoting &&
-        availableVotes &&
-        JSBI.greaterThan(availableVotes?.raw, JSBI.BigInt(0)) &&
+        userVotes &&
+        JSBI.greaterThan(userVotes?.raw, JSBI.BigInt(0)) &&
         endDate &&
         endDate > now &&
         startDate &&
@@ -275,5 +290,57 @@ export default function VotePage({
         </AutoColumn>
       </ProposalInfo>
     </PageWrapper>
+  )
+}
+
+export function PfxVotePage({
+  match: {
+    params: { id }
+  }
+}: RouteComponentProps<{ id: string }>) {
+  const { chainId } = useActiveWeb3React()
+
+  const pfx = PFX[chainId ?? ChainId.AVALANCHE]
+
+  const proposalData = usePfxProposalData(id)
+  const userVotes = usePfxUserVotes()
+  const userDelegatee = usePfxUserDelegatee()
+  const voteCallback = usePfxVoteCallback()
+
+  return (
+    <VotePage
+      token={pfx}
+      proposalData={proposalData}
+      userVotes={userVotes}
+      userDelegatee={userDelegatee}
+      voteRootPath="/vote-pfx"
+      voteCallback={voteCallback}
+    />
+  )
+}
+
+export function AkitaVotePage({
+  match: {
+    params: { id }
+  }
+}: RouteComponentProps<{ id: string }>) {
+  const { chainId } = useActiveWeb3React()
+
+  const gAkita = gAKITA[chainId ?? ChainId.AVALANCHE]
+
+  const proposalData = useGAkitaProposalData(id)
+  const userVotes = useGAkitaUserVotes()
+  const userDelegatee = useGAkitaUserDelegatee()
+  const voteCallback = useGAkitaVoteCallback()
+
+  return (
+    <VotePage
+      token={gAkita}
+      proposalData={proposalData}
+      userVotes={userVotes}
+      userDelegatee={userDelegatee}
+      voteRootPath="/vote-gakita"
+      voteCallback={voteCallback}
+    />
   )
 }

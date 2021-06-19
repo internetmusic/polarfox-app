@@ -7,6 +7,7 @@
     "@ethersproject/experimental": "^5.0.1",
     "@polarfox/core": "2.3.2",
     "@polarfox/governance": "0.0.5",
+    "@polarfox/akita-governance": "1.0.6",
     "@polarfox/lib": "1.0.1",
     "@polarfox/periphery": "2.0.2",
     "@polarfox/sdk": "1.0.8",
