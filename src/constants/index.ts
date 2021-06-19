@@ -16,8 +16,13 @@ export const FORUM_PAGE = 'https://forum.polarfox.io/'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
-export const GOVERNANCE_ADDRESS: { [chainId in ChainId]: string } = {
+export const PFX_GOVERNANCE_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.FUJI]: '0xad3CB8d7B31b2f9619Fe82ae93DF5C041fFf87cE',
+  [ChainId.AVALANCHE]: '' // TODO: Add
+}
+
+export const AKITA_GOVERNANCE_ADDRESS: { [chainId in ChainId]: string } = {
+  [ChainId.FUJI]: '0xd848A6A81769b8829a3dbaD27Ba0EAA74BC0b12b',
   [ChainId.AVALANCHE]: '' // TODO: Add
 }
 
@@ -39,12 +44,18 @@ export const AKITA: { [chainId in ChainId]: Token } = {
 export const gAKITA: { [chainId in ChainId]: Token } = {
   [ChainId.FUJI]: new Token(
     ChainId.FUJI,
-    '0xa1cbD835A868D374aBc0B429A294A2F05C6C868A',
+    '0x68b58495cab3938E7ea755977795C5FcDED286BD',
     18,
     'gAKITA',
     'Akita Inu Governance Token'
   ),
-  [ChainId.AVALANCHE]: new Token(ChainId.AVALANCHE, ZERO_ADDRESS, 18, 'gAKITA', 'Akita Inu Governance Token') // TODO: Wrong address, must update
+  [ChainId.AVALANCHE]: new Token(
+    ChainId.AVALANCHE,
+    ZERO_ADDRESS, // TODO: Wrong address, must update
+    18,
+    'gAKITA',
+    'Akita Inu Governance Token'
+  )
 }
 
 // Test tokens
