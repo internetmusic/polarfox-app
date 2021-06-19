@@ -9,7 +9,7 @@ import { TYPE, CustomLightSpinner } from '../../theme'
 import { X, ArrowUpCircle } from 'react-feather'
 import { ButtonPrimary } from '../Button'
 import Circle from '../../assets/images/blue-loader.svg'
-import { useVoteCallback, useUserVotes } from '../../state/governance/hooks'
+import { VoteCallback } from '../../state/governance/hooks'
 import { getEtherscanLink } from '../../utils'
 import { ExternalLink } from '../../theme/components'
 import { TokenAmount } from '@polarfox/sdk'
@@ -36,19 +36,15 @@ const ConfirmedIcon = styled(ColumnCenter)`
 
 interface VoteModalProps {
   isOpen: boolean
-  onDismiss: () => void
   support: boolean // if user is for or against proposal
   proposalId: string | undefined // id for the proposal to vote on
+  voteCallback: VoteCallback
+  userVotes?: TokenAmount
+  onDismiss: () => void
 }
 
-export default function VoteModal({ isOpen, onDismiss, proposalId, support }: VoteModalProps) {
+export default function VoteModal({ isOpen, proposalId, support, voteCallback, userVotes, onDismiss }: VoteModalProps) {
   const { chainId } = useActiveWeb3React()
-  const {
-    voteCallback
-  }: {
-    voteCallback: (proposalId: string | undefined, support: boolean) => Promise<string> | undefined
-  } = useVoteCallback()
-  const availableVotes: TokenAmount | undefined = useUserVotes()
 
   // monitor call to help UI loading state
   const [hash, setHash] = useState<string | undefined>()
@@ -92,7 +88,7 @@ export default function VoteModal({ isOpen, onDismiss, proposalId, support }: Vo
               } proposal ${proposalId}`}</TYPE.mediumHeader>
               <StyledClosed stroke="black" onClick={wrappedOndismiss} />
             </RowBetween>
-            <TYPE.largeHeader>{availableVotes?.toSignificant(4)} Votes</TYPE.largeHeader>
+            <TYPE.largeHeader>{userVotes?.toSignificant(4)} Votes</TYPE.largeHeader>
             <ButtonPrimary onClick={onVote}>
               <TYPE.mediumHeader color="white">{`Vote ${
                 support ? 'for ' : 'against'

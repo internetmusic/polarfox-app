@@ -11,10 +11,10 @@ import { useActiveWeb3React } from '../../hooks'
 import AddressInputPanel from '../AddressInputPanel'
 import { isAddress } from 'ethers/lib/utils'
 import useENS from '../../hooks/useENS'
-import { useDelegateCallback } from '../../state/governance/hooks'
+import { DelegateCallback } from '../../state/governance/hooks'
 import { useTokenBalance } from '../../state/wallet/hooks'
-import { PFX } from '../../constants'
 import { LoadingView, SubmittedView } from '../ModalViews'
+import { Token } from '@polarfox/sdk'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;
@@ -35,12 +35,14 @@ const TextButton = styled.div`
 
 interface VoteModalProps {
   isOpen: boolean
-  onDismiss: () => void
   title: string
+  token: Token
+  delegateCallback: DelegateCallback
+  onDismiss: () => void
 }
 
-export default function DelegateModal({ isOpen, onDismiss, title }: VoteModalProps) {
-  const { account, chainId } = useActiveWeb3React()
+export default function DelegateModal({ isOpen, title, token, delegateCallback, onDismiss }: VoteModalProps) {
+  const { account } = useActiveWeb3React()
 
   // state for delegate input
   const [usingDelegate, setUsingDelegate] = useState(false)
@@ -55,9 +57,7 @@ export default function DelegateModal({ isOpen, onDismiss, title }: VoteModalPro
   const { address: parsedAddress } = useENS(activeDelegate)
 
   // get the number of votes available to delegate
-  const pfxBalance = useTokenBalance(account ?? undefined, chainId ? PFX[chainId] : undefined)
-
-  const delegateCallback = useDelegateCallback()
+  const pfxBalance = useTokenBalance(account ?? undefined, token)
 
   // monitor call to help UI loading state
   const [hash, setHash] = useState<string | undefined>()

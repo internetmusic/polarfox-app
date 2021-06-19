@@ -1,12 +1,23 @@
 import { Button } from 'rebass/styled-components'
 import { darken } from 'polished'
 import { CardSection, DataCard, CardNoise, CardBGImage } from '../../components/earn/styled'
-import { useAllProposalData, ProposalData, useUserVotes, useUserDelegatee } from '../../state/governance/hooks'
+import {
+  ProposalData,
+  DelegateCallback,
+  usePfxUserVotes,
+  usePfxUserDelegatee,
+  usePfxDelegateCallback,
+  useGAkitaUserVotes,
+  useGAkitaUserDelegatee,
+  useGAkitaDelegateCallback,
+  useAllPfxProposalData,
+  useAllGAkitaProposalData
+} from '../../state/governance/hooks'
 import DelegateModal from '../../components/vote/DelegateModal'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { useActiveWeb3React } from '../../hooks'
-import { PFX, ZERO_ADDRESS } from '../../constants'
-import { JSBI, TokenAmount, ChainId } from '@polarfox/sdk'
+import { PFX, ZERO_ADDRESS, gAKITA } from '../../constants'
+import { JSBI, TokenAmount, ChainId, Token } from '@polarfox/sdk'
 import { shortenAddress, getEtherscanLink } from '../../utils'
 import Loader from '../../components/Loader'
 import FormattedCurrencyAmount from '../../components/FormattedCurrencyAmount'
@@ -22,6 +33,7 @@ import { ButtonPrimary } from '../../components/Button'
 
 import { useModalOpen, useToggleDelegateModal } from '../../state/application/hooks'
 import { ApplicationModal } from '../../state/application/actions'
+import { numberWithCommas } from '../../utils/format'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -103,32 +115,50 @@ const EmptyProposals = styled.div`
   align-items: center;
 `
 
-export default function Vote() {
-  const { account, chainId } = useActiveWeb3React()
+interface VoteProps {
+  token: Token
+  governanceName: string
+  minimumBalanceToPropose: number
+  userVotes?: TokenAmount
+  userDelegatee?: string
+  allProposals: ProposalData[]
+  delegateCallback: DelegateCallback
+}
+
+function Vote({
+  token,
+  governanceName,
+  minimumBalanceToPropose,
+  userVotes,
+  userDelegatee,
+  allProposals,
+  delegateCallback
+}: VoteProps) {
+  const { account } = useActiveWeb3React()
 
   // toggle for showing delegation modal
   const showDelegateModal = useModalOpen(ApplicationModal.DELEGATE)
   const toggleDelegateModal = useToggleDelegateModal()
 
-  // get data to list all proposals
-  const allProposals: ProposalData[] = useAllProposalData()
-
   // user data
-  const availableVotes: TokenAmount | undefined = useUserVotes()
-  const pfxBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, chainId ? PFX[chainId] : undefined)
-  const userDelegatee: string | undefined = useUserDelegatee()
+  const balance: TokenAmount | undefined = useTokenBalance(account ?? undefined, token)
 
   // show delegation option if they have have a balance, but have not delegated
   const showUnlockVoting = Boolean(
-    pfxBalance && JSBI.notEqual(pfxBalance.raw, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS
+    balance && JSBI.notEqual(balance.raw, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS
   )
+
+  const symbol = token.symbol ?? ''
+  const pageRootPath = `/vote-${symbol.toLowerCase()}`
 
   return (
     <PageWrapper gap="lg" justify="center">
       <DelegateModal
         isOpen={showDelegateModal}
-        onDismiss={toggleDelegateModal}
         title={showUnlockVoting ? 'Unlock Votes' : 'Update Delegation'}
+        token={token}
+        delegateCallback={delegateCallback}
+        onDismiss={toggleDelegateModal}
       />
       <TopSection gap="md">
         <VoteCard>
@@ -137,18 +167,18 @@ export default function Vote() {
           <CardSection>
             <AutoColumn gap="md">
               <RowBetween>
-                <TYPE.white fontWeight={600}>Polarfox Governance</TYPE.white>
+                <TYPE.white fontWeight={600}>{governanceName}</TYPE.white>
               </RowBetween>
               <RowBetween>
                 <TYPE.white fontSize={14}>
-                  PFX tokens represent voting shares in Polarfox governance. You can vote on each proposal yourself or
-                  delegate your votes to a third party.
+                  {symbol} tokens represent voting shares in {governanceName} governance. You can vote on each proposal
+                  yourself or delegate your votes to a third party.
                 </TYPE.white>
               </RowBetween>
               <RowBetween>
                 <TYPE.white fontSize={14}>
-                  To be eligible to vote, you must hold PFX in your wallet and delegate it at the start of voting. After
-                  voting has begun, you may pool or spend your PFX.
+                  To be eligible to vote, you must hold {symbol} in your wallet and delegate it at the start of voting.
+                  After voting has begun, you may pool or spend your {symbol}.
                 </TYPE.white>
               </RowBetween>
               <RowBetween>
@@ -165,7 +195,7 @@ export default function Vote() {
       <TopSection gap="2px">
         <WrapSmall>
           <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>Proposals</TYPE.mediumHeader>
-          {(!allProposals || allProposals.length === 0) && !availableVotes && <Loader />}
+          {(!allProposals || allProposals.length === 0) && !userVotes && <Loader />}
           {showUnlockVoting ? (
             <ButtonPrimary
               style={{ width: 'fit-content' }}
@@ -175,16 +205,16 @@ export default function Vote() {
             >
               Unlock Voting
             </ButtonPrimary>
-          ) : availableVotes && JSBI.notEqual(JSBI.BigInt(0), availableVotes?.raw) ? (
+          ) : userVotes && JSBI.notEqual(JSBI.BigInt(0), userVotes?.raw) ? (
             <TYPE.body fontWeight={500} mr="6px">
-              <FormattedCurrencyAmount currencyAmount={availableVotes} /> Votes
+              <FormattedCurrencyAmount currencyAmount={userVotes} /> Votes
             </TYPE.body>
-          ) : pfxBalance &&
+          ) : balance &&
             userDelegatee &&
             userDelegatee !== ZERO_ADDRESS &&
-            JSBI.notEqual(JSBI.BigInt(0), pfxBalance?.raw) ? (
+            JSBI.notEqual(JSBI.BigInt(0), balance?.raw) ? (
             <TYPE.body fontWeight={500} mr="6px">
-              <FormattedCurrencyAmount currencyAmount={pfxBalance} /> Votes
+              <FormattedCurrencyAmount currencyAmount={balance} /> Votes
             </TYPE.body>
           ) : (
             ''
@@ -225,7 +255,7 @@ export default function Vote() {
         )}
         {allProposals?.map((p: ProposalData, i) => {
           return (
-            <Proposal as={Link} to={'/vote/' + p.id} key={i}>
+            <Proposal as={Link} to={`${pageRootPath}/${p.id}`} key={i}>
               <ProposalNumber>{p.id}</ProposalNumber>
               <ProposalTitle>{p.title}</ProposalTitle>
               <ProposalStatus status={p.status}>{p.status}</ProposalStatus>
@@ -233,7 +263,55 @@ export default function Vote() {
           )
         })}
       </TopSection>
-      <TYPE.subHeader color="text3">A minimum threshold of 500,000 PFX is required to submit proposals</TYPE.subHeader>
+      <TYPE.subHeader color="text3">
+        A minimum threshold of {numberWithCommas(minimumBalanceToPropose)} {symbol} is required to submit proposals
+      </TYPE.subHeader>
     </PageWrapper>
+  )
+}
+
+export function VotePFX() {
+  const { chainId } = useActiveWeb3React()
+
+  const pfx = PFX[chainId ?? ChainId.AVALANCHE]
+
+  const userVotes = usePfxUserVotes()
+  const userDelegatee = usePfxUserDelegatee()
+  const delegateCallback = usePfxDelegateCallback()
+  const allProposals = useAllPfxProposalData()
+
+  return (
+    <Vote
+      token={pfx}
+      governanceName="Polarfox"
+      minimumBalanceToPropose={500_000}
+      userVotes={userVotes}
+      userDelegatee={userDelegatee}
+      allProposals={allProposals}
+      delegateCallback={delegateCallback}
+    />
+  )
+}
+
+export function VoteGAkita() {
+  const { chainId } = useActiveWeb3React()
+
+  const gAkita = gAKITA[chainId ?? ChainId.AVALANCHE]
+
+  const userVotes = useGAkitaUserVotes()
+  const userDelegatee = useGAkitaUserDelegatee()
+  const delegateCallback = useGAkitaDelegateCallback()
+  const allProposals = useAllGAkitaProposalData()
+
+  return (
+    <Vote
+      token={gAkita}
+      governanceName="Akita Inu"
+      minimumBalanceToPropose={100}
+      userVotes={userVotes}
+      userDelegatee={userDelegatee}
+      allProposals={allProposals}
+      delegateCallback={delegateCallback}
+    />
   )
 }

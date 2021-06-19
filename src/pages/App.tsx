@@ -22,8 +22,8 @@ import RemoveLiquidity from './RemoveLiquidity'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import Swap from './Swap'
 import { RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
-import Vote from './Vote'
-import VotePage from './Vote/VotePage'
+import { VotePFX, VoteGAkita } from './Vote'
+import { AkitaVotePage, PfxVotePage } from './Vote/VotePage'
 
 const AppWrapper = styled.div`
   display: flex;
@@ -82,8 +82,9 @@ export default function App() {
               <Route exact strict path="/find" component={PoolFinder} />
               <Route exact strict path="/pool" component={Pool} />
               <Route exact strict path="/pfx" component={EarnPfx} />
-              <Route exact strict path="/vote" component={Vote} />
+              <Route exact strict path="/vote-pfx" component={VotePFX} />
               <Route exact strict path="/gakita" component={EarnGAkita} />
+              <Route exact strict path="/vote-gakita" component={VoteGAkita} />
               <Route exact strict path="/create" component={RedirectToAddLiquidity} />
               <Route exact path="/add" component={AddLiquidity} />
               <Route exact path="/add/:currencyIdA" component={RedirectOldAddLiquidityPathStructure} />
@@ -95,7 +96,8 @@ export default function App() {
               <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
               <Route exact strict path="/pfx/:currencyIdA/:currencyIdB" component={ManagePfx} />
               <Route exact strict path="/gakita/:currencyIdA/:currencyIdB" component={ManageGAkita} />
-              <Route exact strict path="/vote/:id" component={VotePage} />
+              <Route exact strict path="/vote-pfx/:id" component={PfxVotePage} />
+              <Route exact strict path="/vote-gakita/:id" component={AkitaVotePage} />
               <Route component={RedirectPathToSwapOnly} />
             </Switch>
           </Web3ReactManager>
