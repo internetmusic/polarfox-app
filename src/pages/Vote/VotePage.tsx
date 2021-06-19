@@ -139,9 +139,9 @@ function VotePage({ token, proposalData, userVotes, userDelegatee, voteRootPath,
     proposalData && totalVotes ? ((proposalData.againstCount * 100) / totalVotes).toFixed(0) + '%' : '0%'
 
   // show delegation option if they have have a balance, have not delegated
-  const uniBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, token)
+  const tokenBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, token)
   const showUnlockVoting = Boolean(
-    uniBalance && JSBI.notEqual(uniBalance.raw, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS
+    tokenBalance && JSBI.notEqual(tokenBalance.raw, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS
   )
 
   // show links in propsoal details if content is an address

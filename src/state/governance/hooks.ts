@@ -254,7 +254,7 @@ function useDelegateCallback(tokenContract: Contract | null): DelegateCallback {
     (delegatee: string | undefined) => {
       if (!library || !chainId || !account || !isAddress(delegatee ?? '')) return undefined
       const args = [delegatee]
-      if (!tokenContract) throw new Error('No PFX Contract!')
+      if (!tokenContract) throw new Error('No token contract!')
       return tokenContract.estimateGas.delegate(...args, {}).then(estimatedGasLimit => {
         return tokenContract
           .delegate(...args, { value: null, gasLimit: calculateGasMargin(estimatedGasLimit) })
