@@ -309,7 +309,7 @@ export default function Header() {
             gAKITA
           </StyledNavLink>
           <StyledNavLink id={`stake-nav-link`} to={'/vote-gakita'}>
-            Akita Inu Governance
+            AKITA Governance
           </StyledNavLink>
           <StyledExternalLink id={`info-nav-link`} href={ANALYTICS_PAGE}>
             Charts <span style={{ fontSize: '11px' }}>↗</span>
