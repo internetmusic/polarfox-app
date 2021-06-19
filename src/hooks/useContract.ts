@@ -2,8 +2,10 @@ import { Contract } from '@ethersproject/contracts'
 import { WAVAX } from '@polarfox/sdk'
 import { abi as IPolarfoxPairABI } from '@polarfox/core/build/IPolarfoxPair.json'
 import { abi as STAKING_REWARDS_ABI } from '@polarfox/core/build/StakingRewards.json'
-import { abi as GOVERNANCE_ABI } from '@polarfox/governance/artifacts/contracts/GovernorAlpha.sol/GovernorAlpha.json'
+import { abi as PFX_GOVERNANCE_ABI } from '@polarfox/governance/artifacts/contracts/GovernorAlpha.sol/GovernorAlpha.json'
+import { abi as AKITA_GOVERNANCE_ABI } from '@polarfox/akita-governance/artifacts/contracts/GovernorAlpha.sol/GovernorAlpha.json'
 import { abi as PFX_ABI } from '@polarfox/governance/artifacts/contracts/PFX.sol/Pfx.json'
+import { abi as GAKITA_ABI } from '@polarfox/akita-governance/artifacts/contracts/gAKITA.sol/gAKITA.json'
 import { useMemo } from 'react'
 import ENS_PUBLIC_RESOLVER_ABI from '../constants/abis/ens-public-resolver.json'
 import { ERC20_BYTES32_ABI } from '../constants/abis/erc20'
@@ -14,7 +16,7 @@ import { MULTICALL_ABI, MULTICALL_NETWORKS } from '../constants/multicall'
 import { V1_EXCHANGE_ABI, V1_FACTORY_ABI, V1_FACTORY_ADDRESSES } from '../constants/v1'
 import { getContract } from '../utils'
 import { useActiveWeb3React } from './index'
-import { GOVERNANCE_ADDRESS, PFX } from '../constants'
+import { PFX_GOVERNANCE_ADDRESS, PFX, AKITA_GOVERNANCE_ADDRESS, gAKITA } from '../constants'
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
@@ -70,14 +72,24 @@ export function useMulticallContract(): Contract | null {
   return useContract(chainId && MULTICALL_NETWORKS[chainId], MULTICALL_ABI, false)
 }
 
-export function useGovernanceContract(): Contract | null {
+export function usePfxGovernanceContract(): Contract | null {
   const { chainId } = useActiveWeb3React()
-  return useContract(chainId ? GOVERNANCE_ADDRESS[chainId] : undefined, GOVERNANCE_ABI, true)
+  return useContract(chainId ? PFX_GOVERNANCE_ADDRESS[chainId] : undefined, PFX_GOVERNANCE_ABI, true)
+}
+
+export function useAkitaGovernanceContract(): Contract | null {
+  const { chainId } = useActiveWeb3React()
+  return useContract(chainId ? AKITA_GOVERNANCE_ADDRESS[chainId] : undefined, AKITA_GOVERNANCE_ABI, true)
 }
 
 export function usePfxContract(): Contract | null {
   const { chainId } = useActiveWeb3React()
   return useContract(chainId ? PFX[chainId].address : undefined, PFX_ABI, true)
+}
+
+export function useGAkitaContract(): Contract | null {
+  const { chainId } = useActiveWeb3React()
+  return useContract(chainId ? gAKITA[chainId].address : undefined, GAKITA_ABI, true)
 }
 
 export function useStakingContract(stakingAddress?: string, withSignerIfPossible?: boolean): Contract | null {

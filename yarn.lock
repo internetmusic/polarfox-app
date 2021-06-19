@@ -2395,10 +2395,10 @@
     hash.js "^1.1.7"
     randombytes "^2.1.0"
 
-"@polarfox/akita-governance@1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@polarfox/akita-governance/-/akita-governance-1.0.5.tgz#a413bdfb9d3f79ddb1fba06670eeb51da414d408"
-  integrity sha512-iFUsWvBgWc7FhgwrBffAPT14ejez/szsvO/QPsEFjTXAojU32QpIjJJkKR07BXpfsAGPv62WDFWIVGwGPNQTkw==
+"@polarfox/akita-governance@1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@polarfox/akita-governance/-/akita-governance-1.0.6.tgz#af5dfb627c4eaf881597b73d15d0f448eb1c52af"
+  integrity sha512-a7KnsVLCCQSOd2z/O4Ra01RGOqzw5+iqU1wypBUIje2x1dB8hwHywhBWTq5kCyobooU+G2LhOgFddLfqiKeXUA==
 
 "@polarfox/core@2.3.2", "@polarfox/core@^2.3.2":
   version "2.3.2"
