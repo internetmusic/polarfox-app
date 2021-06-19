@@ -306,7 +306,7 @@ export function VoteGAkita() {
   return (
     <Vote
       token={gAkita}
-      governanceName="Akita Inu"
+      governanceName="Akita"
       minimumBalanceToPropose={100}
       userVotes={userVotes}
       userDelegatee={userDelegatee}
