@@ -10,7 +10,7 @@
     "@polarfox/akita-governance": "1.0.6",
     "@polarfox/lib": "1.0.1",
     "@polarfox/periphery": "2.0.2",
-    "@polarfox/sdk": "1.0.8",
+    "@polarfox/sdk": "1.0.11",
     "@polarfox/web3-react-injected-connector": "^1.0.1",
     "@popperjs/core": "^2.4.4",
     "@reach/dialog": "^0.10.3",

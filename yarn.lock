@@ -2439,10 +2439,10 @@
     "@polarfox/core" "^2.3.2"
     "@polarfox/lib" "^1.0.1"
 
-"@polarfox/sdk@1.0.8":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@polarfox/sdk/-/sdk-1.0.8.tgz#10b2df55859048951ce815d1b6058906c339688e"
-  integrity sha512-VLqtjAHlUX+eymAqbyhAF3EHGTWLpB+4fA39TBmVi0hUVZLcehp6amjuWDaCYh4HO3vSHeD3jmT9AuWw8tM/GA==
+"@polarfox/sdk@1.0.11":
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/@polarfox/sdk/-/sdk-1.0.11.tgz#dd7fc92e3859b049ca4d2e19905d7b71041dfecb"
+  integrity sha512-q+YCSNf81Ww+kSe92MhTQMoebzRGtPnKBtM7XrR+WMLdaUWnevNoS6ymzlJsD3YHBIJdMgMvBrLsMzrFqnjDTg==
   dependencies:
     "@openzeppelin/cli" "^2.8.2"
     "@polarfox/core" "^2.0.0"
@@ -18467,10 +18467,8 @@ watchpack@^1.6.0:
   resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.7.5.tgz#1267e6c55e0b9b5be44c2023aed5437a2c26c453"
   integrity sha512-9P3MWk6SrKjHsGkLT2KHXdQ/9SNkyoJbabxnKOoJepsvJjJG8uYTR3yTPxPQvNDI3w4Nz1xnE0TLHK4RIVe/MQ==
   dependencies:
-    chokidar "^3.4.1"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
-    watchpack-chokidar2 "^2.0.1"
   optionalDependencies:
     chokidar "^3.4.1"
     watchpack-chokidar2 "^2.0.1"

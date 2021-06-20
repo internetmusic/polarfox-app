@@ -1,6 +1,6 @@
 import { ChainId, CurrencyAmount, JSBI, Token, TokenAmount, WAVAX, Pair } from '@polarfox/sdk'
 import { useMemo } from 'react'
-import { PFX, AKITA, TEST1 } from '../../constants'
+import { PFX, AKITA, WETH, USDT } from '../../constants'
 import { STAKING_REWARDS_INTERFACE } from '../../constants/abis/staking-rewards'
 import { PairState, usePair, usePairs } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
@@ -24,15 +24,23 @@ export const PFX_STAKING_REWARDS_INFO: {
   [ChainId.FUJI]: [
     {
       tokens: [PFX[ChainId.FUJI], WAVAX[ChainId.FUJI]],
-      stakingRewardAddress: '0x4bBd083B7DdF1e7019f6abB14738D4Ff4F686EcA'
+      stakingRewardAddress: '0x5cb5756c1403E49DB7C12a94Ceb21322B665A8E1'
     },
     {
-      tokens: [PFX[ChainId.FUJI], TEST1[ChainId.FUJI]],
-      stakingRewardAddress: '0x5bBE66E9C8D0A9877A1CC4bD203E03174Ca28928'
+      tokens: [PFX[ChainId.FUJI], WETH[ChainId.FUJI]],
+      stakingRewardAddress: '0xeF9C6C8417f1745353B723Ea27e30d232e2e0887'
     },
     {
-      tokens: [WAVAX[ChainId.FUJI], TEST1[ChainId.FUJI]],
-      stakingRewardAddress: '0xEa40Eee828ee265915e0CFc634bEf078E27F1D28'
+      tokens: [PFX[ChainId.FUJI], USDT[ChainId.FUJI]],
+      stakingRewardAddress: '0x0e64274785686c4e9D538944d591c2Fb08a5e59d'
+    },
+    {
+      tokens: [WAVAX[ChainId.FUJI], WETH[ChainId.FUJI]],
+      stakingRewardAddress: '0x2D97036C126c89b93cb27aE122680fcbA653cbeb'
+    },
+    {
+      tokens: [WAVAX[ChainId.FUJI], USDT[ChainId.FUJI]],
+      stakingRewardAddress: '0x5Fa9D9ed86EA07793b2a733C7D3b54B0726B28FD'
     }
   ]
 }
@@ -44,11 +52,11 @@ export const GAKITA_STAKING_REWARDS_INFO: {
   [ChainId.FUJI]: [
     {
       tokens: [AKITA[ChainId.FUJI], PFX[ChainId.FUJI]],
-      stakingRewardAddress: '0xeb1E41117F816aF98E0Dd3c22Ee4A97A2E5B08fA'
+      stakingRewardAddress: '0x86Ff3c7261Fba8A3211Ab657e18a532413aBBaca'
     },
     {
       tokens: [AKITA[ChainId.FUJI], WAVAX[ChainId.FUJI]],
-      stakingRewardAddress: '0x9f61fCDC2B7c286fD382ef59E4E85E6CeedDd16A'
+      stakingRewardAddress: '0x8D56F76ceDBF5fe08BF9aE6d42DdeDB25d58913a'
     }
   ]
 }
