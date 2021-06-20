@@ -123,16 +123,17 @@ function Manage({ currencyIdA, currencyIdB, rewardToken, stakingInfoProvider }: 
     // let returnOverMonth: Percent = new Percent('0')
     if (totalSupplyOfStakingToken && stakingTokenPair && wavax) {
       // take the total amount of LP tokens staked, multiply by AVAX value of all LP tokens, divide by all LP tokens
-      valueOfTotalStakedAmountInWavax = new TokenAmount(
-        wavax,
-        JSBI.divide(
-          JSBI.multiply(
-            JSBI.multiply(stakingInfo.totalStakedAmount.raw, stakingTokenPair.reserveOf(wavax).raw),
-            JSBI.BigInt(2) // this is b/c the value of LP shares are ~double the value of the wavax they entitle owner to
-          ),
-          totalSupplyOfStakingToken.raw
-        )
-      )
+      const amount = JSBI.notEqual(totalSupplyOfStakingToken.raw, JSBI.BigInt(0))
+        ? JSBI.divide(
+            JSBI.multiply(
+              JSBI.multiply(stakingInfo.totalStakedAmount.raw, stakingTokenPair.reserveOf(wavax).raw),
+              JSBI.BigInt(2) // this is b/c the value of LP shares are ~double the value of the wavax they entitle owner to
+            ),
+            totalSupplyOfStakingToken.raw
+          )
+        : JSBI.BigInt(0)
+
+      valueOfTotalStakedAmountInWavax = new TokenAmount(wavax, amount)
     }
 
     // get the USD value of staked wavax

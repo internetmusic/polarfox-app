@@ -98,7 +98,13 @@ const calculateTotalStakedAmountInAvaxFromPfx = function(
     return new TokenAmount(chainId ? WAVAX[chainId] : WAVAX[ChainId.AVALANCHE], JSBI.BigInt(0))
   }
 
-  const avaxPfxRatio = JSBI.divide(JSBI.multiply(oneToken, avaxPfxPairReserveOfOtherToken), avaxPfxPairReserveOfPfx)
+  if (JSBI.equal(avaxPfxPairReserveOfPfx, JSBI.BigInt(0))) {
+    console.error('Division by zero - avaxPfxPairReserveOfPfx is zero')
+  }
+
+  const avaxPfxRatio = JSBI.notEqual(avaxPfxPairReserveOfPfx, JSBI.BigInt(0))
+    ? JSBI.divide(JSBI.multiply(oneToken, avaxPfxPairReserveOfOtherToken), avaxPfxPairReserveOfPfx)
+    : JSBI.BigInt(0)
 
   const valueOfPfxInAvax = JSBI.divide(JSBI.multiply(stakingTokenPairReserveOfPfx, avaxPfxRatio), oneToken)
 
