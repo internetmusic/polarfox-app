@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { AlertTriangle, X } from 'react-feather'
-import { useURLWarningToggle } from '../../state/user/hooks'
 // import { useURLWarningToggle, useURLWarningVisible } from '../../state/user/hooks'
 import { isMobile } from 'react-device-detect'
 
@@ -24,7 +23,7 @@ export const StyledClose = styled(X)`
 `
 
 export default function URLWarning() {
-  const toggleURLWarning = useURLWarningToggle()
+  // const toggleURLWarning = useURLWarningToggle()
   const showURLWarning = true
   // const showURLWarning = useURLWarningVisible()
 
@@ -34,7 +33,7 @@ export default function URLWarning() {
         <AlertTriangle style={{ marginRight: 6 }} size={12} /> This is a testing environment. Do not send any real
         tokens - you could lose them.
       </div>
-      <StyledClose size={12} onClick={toggleURLWarning} />
+      {/* <StyledClose size={12} onClick={toggleURLWarning} /> */}
     </PhishAlert>
   ) : (
     <PhishAlert isActive={showURLWarning}>
