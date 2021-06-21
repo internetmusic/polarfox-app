@@ -91,9 +91,10 @@ interface ManageProps {
   currencyIdB: string
   rewardToken: Token
   stakingInfoProvider: (pairToFilterBy: Pair | null) => StakingInfo[]
+  emoji: string
 }
 
-function Manage({ currencyIdA, currencyIdB, rewardToken, stakingInfoProvider }: ManageProps) {
+function Manage({ currencyIdA, currencyIdB, rewardToken, stakingInfoProvider, emoji }: ManageProps) {
   const { account, chainId } = useActiveWeb3React()
 
   // get currencies and pair
@@ -378,7 +379,7 @@ function Manage({ currencyIdA, currencyIdB, rewardToken, stakingInfoProvider }: 
                 </TYPE.largeHeader>
                 <TYPE.black fontSize={16} fontWeight={500}>
                   <span role="img" aria-label="wizard-icon" style={{ marginRight: '8px ' }}>
-                    ⚡
+                    {emoji}
                   </span>
                   {stakingInfo?.rewardRate
                     ?.multiply((60 * 60 * 24 * 7).toString())
@@ -437,6 +438,7 @@ export function ManagePfx({
       currencyIdB={currencyIdB}
       rewardToken={PFX[chainId ?? ChainId.AVALANCHE]}
       stakingInfoProvider={usePfxStakingInfo}
+      emoji={'🦊'}
     />
   )
 }
@@ -454,6 +456,7 @@ export function ManageGAkita({
       currencyIdB={currencyIdB}
       rewardToken={gAKITA[chainId ?? ChainId.AVALANCHE]}
       stakingInfoProvider={useGAkitaStakingInfo}
+      emoji={'🐕'}
     />
   )
 }

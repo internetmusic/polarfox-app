@@ -49,9 +49,10 @@ interface EarnProps {
   stakingInfo: StakingInfo[]
   hasStakingRewards: boolean
   depositMessage: string
+  emoji: string
 }
 
-function Earn({ rewardToken, rewardTokenUrl, stakingInfo, hasStakingRewards, depositMessage }: EarnProps) {
+function Earn({ rewardToken, rewardTokenUrl, stakingInfo, hasStakingRewards, depositMessage, emoji }: EarnProps) {
   const poolGroup = rewardToken.symbol?.toLowerCase() || ''
 
   return (
@@ -121,6 +122,7 @@ function Earn({ rewardToken, rewardTokenUrl, stakingInfo, hasStakingRewards, dep
                     stakingInfo={info}
                     rewardToken={rewardToken}
                     poolGroup={poolGroup}
+                    emoji={emoji}
                   />
                 )
               })
@@ -148,6 +150,7 @@ export function EarnPfx() {
       stakingInfo={pfxStakingInfo}
       hasStakingRewards={stakingRewardsExist}
       depositMessage="Deposit your Polarfox Liquidity Provider PFX-LP tokens to receive PFX, the Polarfox ecosystem governance token."
+      emoji={'🦊'}
     />
   )
 }
@@ -169,6 +172,7 @@ export function EarnGAkita() {
       stakingInfo={gAkitaStakingInfo}
       hasStakingRewards={stakingRewardsExist}
       depositMessage="Deposit your Polarfox Liquidity Provider PFX-LP tokens to receive gAkita, the Akita Inu governance token."
+      emoji={'🐕'}
     />
   )
 }

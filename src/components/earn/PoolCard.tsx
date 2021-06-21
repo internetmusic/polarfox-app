@@ -74,9 +74,10 @@ interface PoolCardProps {
   stakingInfo: StakingInfo
   rewardToken: Token
   poolGroup: string
+  emoji: string
 }
 
-export default function PoolCard({ stakingInfo, rewardToken, poolGroup }: PoolCardProps) {
+export default function PoolCard({ stakingInfo, rewardToken, poolGroup, emoji }: PoolCardProps) {
   const token0 = stakingInfo.tokens[0]
   const token1 = stakingInfo.tokens[1]
 
@@ -161,7 +162,7 @@ export default function PoolCard({ stakingInfo, rewardToken, poolGroup }: PoolCa
 
             <TYPE.black style={{ textAlign: 'right' }} color={'white'} fontWeight={500}>
               <span role="img" aria-label="wizard-icon" style={{ marginRight: '0.5rem' }}>
-                ⚡
+                {emoji}
               </span>
               {`${stakingInfo.rewardRate?.multiply(`${60 * 60 * 24 * 7}`)?.toSignificant(4, { groupSeparator: ',' })} ${
                 rewardToken.symbol
