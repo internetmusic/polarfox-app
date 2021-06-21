@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useActivePopups } from '../../state/application/hooks'
 import { AutoColumn } from '../Column'
 import PopupItem from './PopupItem'
-import { useURLWarningVisible } from '../../state/user/hooks'
+// import { useURLWarningVisible } from '../../state/user/hooks'
 
 const MobilePopupWrapper = styled.div<{ height: string | number }>`
   position: relative;
@@ -47,7 +47,8 @@ export default function Popups() {
   // get all popups
   const activePopups = useActivePopups()
 
-  const urlWarningActive = useURLWarningVisible()
+  const urlWarningActive = true
+  // const urlWarningActive = useURLWarningVisible()
 
   return (
     <>

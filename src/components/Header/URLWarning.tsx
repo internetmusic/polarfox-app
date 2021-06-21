@@ -2,13 +2,14 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { AlertTriangle, X } from 'react-feather'
-import { useURLWarningToggle, useURLWarningVisible } from '../../state/user/hooks'
+import { useURLWarningToggle } from '../../state/user/hooks'
+// import { useURLWarningToggle, useURLWarningVisible } from '../../state/user/hooks'
 import { isMobile } from 'react-device-detect'
 
 const PhishAlert = styled.div<{ isActive: any }>`
   width: 100%;
   padding: 6px 6px;
-  background-color: ${({ theme }) => theme.blue1};
+  background-color: ${({ theme }) => theme.red2};
   color: white;
   font-size: 11px;
   justify-content: space-between;
@@ -24,24 +25,24 @@ export const StyledClose = styled(X)`
 
 export default function URLWarning() {
   const toggleURLWarning = useURLWarningToggle()
-  const showURLWarning = useURLWarningVisible()
+  const showURLWarning = true
+  // const showURLWarning = useURLWarningVisible()
 
   return isMobile ? (
     <PhishAlert isActive={showURLWarning}>
       <div style={{ display: 'flex' }}>
-        <AlertTriangle style={{ marginRight: 6 }} size={12} /> Make sure the URL is
-        <code style={{ padding: '0 4px', display: 'inline', fontWeight: 'bold' }}>dex.polarfox.io</code>
+        <AlertTriangle style={{ marginRight: 6 }} size={12} /> This is a testing environment. Do not send any real
+        tokens - you could lose them.
       </div>
       <StyledClose size={12} onClick={toggleURLWarning} />
     </PhishAlert>
-  ) : window.location.hostname === 'dex.polarfox.io' ? (
+  ) : (
     <PhishAlert isActive={showURLWarning}>
       <div style={{ display: 'flex' }}>
-        <AlertTriangle style={{ marginRight: 6 }} size={12} /> Always make sure the URL is
-        <code style={{ padding: '0 4px', display: 'inline', fontWeight: 'bold' }}>dex.polarfox.io</code> - bookmark it
-        to be safe.
+        <AlertTriangle style={{ marginRight: 6 }} size={12} /> This is a testing environment. Do not send any real
+        tokens - you could lose them.
       </div>
-      <StyledClose size={12} onClick={toggleURLWarning} />
+      {/* <StyledClose size={12} onClick={toggleURLWarning} /> */}
     </PhishAlert>
-  ) : null
+  )
 }
