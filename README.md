@@ -5,7 +5,7 @@
 An open source interface for the Polarfox DEX.
 
 - Website: [polarfox.io](https://polarfox.io/)
-- App: [app.polarfox.io](https://app.polarfox.io)
+- App: [dex.polarfox.io](https://dex.polarfox.io)
 - Telegram: [polarfoxdex](https://t.me/polarfoxdex)
 - Twitter: [@polarfoxdex](https://twitter.com/polarfoxdex)
 
