@@ -109,7 +109,7 @@ export default function Menu() {
             <Book size={14} />
             Tutorials
           </MenuItem>
-          <MenuItem id="link" href="https://t.me/polarfox-dex">
+          <MenuItem id="link" href="https://t.me/polarfoxdex">
             <Send size={14} />
             Telegram
           </MenuItem>
