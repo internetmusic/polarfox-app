@@ -24,7 +24,9 @@ export enum ApplicationModal {
   SELF_CLAIM,
   ADDRESS_CLAIM,
   CLAIM_POPUP,
-  MENU,
+  SETTINGS_MENU,
+  EARN_MENU,
+  VOTE_MENU,
   DELEGATE,
   VOTE
 }

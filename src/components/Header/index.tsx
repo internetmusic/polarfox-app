@@ -19,6 +19,8 @@ import { TYPE, ExternalLink } from '../../theme'
 import { BlueCard, LightModeBlueCard } from '../Card'
 import Settings from '../Settings'
 import Menu from '../Menu'
+import MenuLink from '../MenuLink'
+import { ApplicationModal } from '../../state/application/actions'
 
 import Row, { RowFixed } from '../Row'
 import Web3Status from '../Web3Status'
@@ -244,6 +246,22 @@ const NETWORK_LABELS: { [chainId in ChainId]?: string } = {
   [ChainId.AVALANCHE]: 'Avalanche'
 }
 
+const EARN_LINKS: {
+  linkRef: string
+  linkTitle: string
+}[] = [
+  { linkRef: '/pfx', linkTitle: 'PFX' },
+  { linkRef: '/gakita', linkTitle: 'gAKITA' }
+]
+
+const VOTE_LINKS: {
+  linkRef: string
+  linkTitle: string
+}[] = [
+  { linkRef: '/vote-pfx', linkTitle: 'PFX Governance' },
+  { linkRef: '/vote-gakita', linkTitle: 'AKITA Governance' }
+]
+
 export default function Header() {
   const { account, chainId } = useActiveWeb3React()
   const { t } = useTranslation()
@@ -299,18 +317,8 @@ export default function Header() {
           >
             {t('pool')}
           </StyledNavLink>
-          <StyledNavLink id={`stake-nav-link`} to={'/pfx'}>
-            PFX
-          </StyledNavLink>
-          <StyledNavLink id={`stake-nav-link`} to={'/vote-pfx'}>
-            PFX Governance
-          </StyledNavLink>
-          <StyledNavLink id={`stake-nav-link`} to={'/gakita'}>
-            gAKITA
-          </StyledNavLink>
-          <StyledNavLink id={`stake-nav-link`} to={'/vote-gakita'}>
-            AKITA Governance
-          </StyledNavLink>
+          <MenuLink links={EARN_LINKS} label="Earn" modal={ApplicationModal.EARN_MENU} />
+          <MenuLink links={VOTE_LINKS} label="Vote" modal={ApplicationModal.VOTE_MENU} />
           <StyledExternalLink id={`info-nav-link`} href={ANALYTICS_PAGE}>
             Charts <span style={{ fontSize: '11px' }}>↗</span>
           </StyledExternalLink>

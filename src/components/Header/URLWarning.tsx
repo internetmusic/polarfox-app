@@ -30,16 +30,16 @@ export default function URLWarning() {
   return isMobile ? (
     <PhishAlert isActive={showURLWarning}>
       <div style={{ display: 'flex' }}>
-        <AlertTriangle style={{ marginRight: 6 }} size={12} /> This is a testing environment. Do not send any real
-        tokens - you could lose them.
+        <AlertTriangle style={{ marginRight: 6 }} size={12} /> This is a test environment. Do not send any real tokens -
+        you could lose them.
       </div>
       {/* <StyledClose size={12} onClick={toggleURLWarning} /> */}
     </PhishAlert>
   ) : (
     <PhishAlert isActive={showURLWarning}>
       <div style={{ display: 'flex' }}>
-        <AlertTriangle style={{ marginRight: 6 }} size={12} /> This is a testing environment. Do not send any real
-        tokens - you could lose them.
+        <AlertTriangle style={{ marginRight: 6 }} size={12} /> This is a test environment. Do not send any real tokens -
+        you could lose them.
       </div>
       {/* <StyledClose size={12} onClick={toggleURLWarning} /> */}
     </PhishAlert>

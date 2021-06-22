@@ -88,8 +88,8 @@ const MenuItem = styled(ExternalLink)`
 
 export default function Menu() {
   const node = useRef<HTMLDivElement>()
-  const open = useModalOpen(ApplicationModal.MENU)
-  const toggle = useToggleModal(ApplicationModal.MENU)
+  const open = useModalOpen(ApplicationModal.SETTINGS_MENU)
+  const toggle = useToggleModal(ApplicationModal.SETTINGS_MENU)
   useOnClickOutside(node, open ? toggle : undefined)
 
   return (
