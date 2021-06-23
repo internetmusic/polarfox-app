@@ -6,7 +6,7 @@ import { useModalOpen, useToggleModal } from '../../state/application/hooks'
 import { darken } from 'polished'
 import { useLocation } from 'react-router-dom'
 
-import { StyledInternalLink } from '../../theme'
+import { StyledInternalLink, MEDIA_WIDTHS } from '../../theme'
 
 const activeClassName = 'ACTIVE'
 const StyledMenuLinkButton = styled.div.attrs({
@@ -45,7 +45,7 @@ const StyledMenu = styled.div`
   text-align: left;
 `
 
-const MenuFlyout = styled.span`
+const MenuFlyout = styled.span<{ positionDesktop: string; positionMobile: string }>`
   min-width: 4rem;
   background-color: ${({ theme }) => theme.bg3};
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
@@ -57,9 +57,13 @@ const MenuFlyout = styled.span`
   font-size: 1rem;
   position: absolute;
   top: 3rem;
-  right: -1rem;
+  right: ${p => p.positionDesktop}rem;
   z-index: 100;
   text-align: center;
+
+  @media only screen and (max-width: ${MEDIA_WIDTHS.upToExtraSmall}px) {
+    right: ${p => p.positionMobile}rem;
+  }
 `
 
 const MenuItem = styled(StyledInternalLink)`
@@ -83,9 +87,11 @@ interface MenuLinkProps {
   }[]
   label: string
   modal: ApplicationModal
+  flyoutPositionDesktop: string
+  flyoutPositionMobile: string
 }
 
-export default function MenuLink({ links, label, modal }: MenuLinkProps) {
+export default function MenuLink({ links, label, modal, flyoutPositionDesktop, flyoutPositionMobile }: MenuLinkProps) {
   const node = useRef<HTMLDivElement>()
   const open = useModalOpen(modal)
   const toggle = useToggleModal(modal)
@@ -102,7 +108,7 @@ export default function MenuLink({ links, label, modal }: MenuLinkProps) {
       </StyledMenuLinkButton>
 
       {open && (
-        <MenuFlyout>
+        <MenuFlyout positionDesktop={flyoutPositionDesktop} positionMobile={flyoutPositionMobile}>
           {links.map(link => {
             return (
               <MenuItem key={link.linkRef} id="link" to={link.linkRef} onClick={toggle}>

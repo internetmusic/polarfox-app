@@ -317,8 +317,20 @@ export default function Header() {
           >
             {t('pool')}
           </StyledNavLink>
-          <MenuLink links={EARN_LINKS} label="Earn" modal={ApplicationModal.EARN_MENU} />
-          <MenuLink links={VOTE_LINKS} label="Vote" modal={ApplicationModal.VOTE_MENU} />
+          <MenuLink
+            links={EARN_LINKS}
+            label="Earn"
+            modal={ApplicationModal.EARN_MENU}
+            flyoutPositionDesktop="-1.1"
+            flyoutPositionMobile="-1.1"
+          />
+          <MenuLink
+            links={VOTE_LINKS}
+            label="Vote"
+            modal={ApplicationModal.VOTE_MENU}
+            flyoutPositionDesktop="-2.2"
+            flyoutPositionMobile="-1"
+          />
           <StyledExternalLink id={`info-nav-link`} href={ANALYTICS_PAGE}>
             Charts <span style={{ fontSize: '11px' }}>↗</span>
           </StyledExternalLink>
