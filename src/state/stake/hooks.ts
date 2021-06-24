@@ -261,14 +261,16 @@ function useStakingInfo(
         const stakedAmount = new TokenAmount(dummyPair.liquidityToken, JSBI.BigInt(balanceState?.result?.[0] ?? 0))
         const totalStakedAmount = new TokenAmount(dummyPair.liquidityToken, totalSupply)
         const totalRewardRate = new TokenAmount(pfx, JSBI.BigInt(rewardRateState.result?.[0]))
-        const isAvaxPool = tokens[0].equals(WAVAX[tokens[0].chainId])
+        const isAvaxPool = tokens[0].equals(WAVAX[tokens[0].chainId]) || tokens[1].equals(WAVAX[tokens[1].chainId])
+        console.log(`Pair ${tokens[0].symbol} / ${tokens[1].symbol} == AvaxPool:`, isAvaxPool)
+        console.log('Wavax:', wavax)
         const totalStakedInWavax = isAvaxPool
           ? calculateTotalStakedAmountInAvax(totalSupply, pair.reserveOf(wavax).raw, totalStakedAmount, chainId)
           : calculateTotalStakedAmountInAvaxFromPfx(
               totalSupply,
               avaxPfxPair.reserveOf(pfx).raw,
               avaxPfxPair.reserveOf(WAVAX[tokens[1].chainId]).raw,
-              pair.involvesToken(pfx) ? pair.reserveOf(pfx).raw : JSBI.BigInt(0), // TODO: What if there is no PFX in this pair
+              pair.involvesToken(pfx) ? pair.reserveOf(pfx).raw : JSBI.BigInt(0),
               totalStakedAmount,
               chainId
             )
