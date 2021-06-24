@@ -20,7 +20,6 @@ import { BlueCard, LightModeBlueCard } from '../Card'
 import Settings from '../Settings'
 import Menu from '../Menu'
 import MenuLink from '../MenuLink'
-import { ApplicationModal } from '../../state/application/actions'
 
 import Row, { RowFixed } from '../Row'
 import Web3Status from '../Web3Status'
@@ -317,20 +316,8 @@ export default function Header() {
           >
             {t('pool')}
           </StyledNavLink>
-          <MenuLink
-            links={EARN_LINKS}
-            label="Earn"
-            modal={ApplicationModal.EARN_MENU}
-            flyoutPositionDesktop="-1.1"
-            flyoutPositionMobile="-1.1"
-          />
-          <MenuLink
-            links={VOTE_LINKS}
-            label="Vote"
-            modal={ApplicationModal.VOTE_MENU}
-            flyoutPositionDesktop="-2.2"
-            flyoutPositionMobile="-1"
-          />
+          <MenuLink links={EARN_LINKS} label="Earn" flyoutPositionDesktop="-1.1" flyoutPositionMobile="-1.1" />
+          <MenuLink links={VOTE_LINKS} label="Vote" flyoutPositionDesktop="-2.2" flyoutPositionMobile="-1" />
           <StyledExternalLink id={`info-nav-link`} href={ANALYTICS_PAGE}>
             Charts <span style={{ fontSize: '11px' }}>↗</span>
           </StyledExternalLink>

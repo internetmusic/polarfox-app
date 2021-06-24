@@ -1,12 +1,44 @@
 import React, { useRef } from 'react'
 import styled from 'styled-components'
-import { useOnClickOutside } from '../../hooks/useOnClickOutside'
-import { ApplicationModal } from '../../state/application/actions'
-import { useModalOpen, useToggleModal } from '../../state/application/hooks'
 import { darken } from 'polished'
 import { useLocation } from 'react-router-dom'
 
 import { StyledInternalLink, MEDIA_WIDTHS } from '../../theme'
+
+// display: flex;
+const MenuFlyout = styled.span<{ positionDesktop: string; positionMobile: string }>`
+  display: none;
+  min-width: 4rem;
+  background-color: ${({ theme }) => theme.bg3};
+  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
+    0px 24px 32px rgba(0, 0, 0, 0.01);
+  border-radius: 12px;
+  padding: 0.5rem;
+  flex-direction: column;
+  font-size: 1rem;
+  position: absolute;
+  top: 1.2rem;
+  right: ${p => p.positionDesktop}rem;
+  z-index: 100;
+  text-align: center;
+
+  @media only screen and (max-width: ${MEDIA_WIDTHS.upToExtraSmall}px) {
+    right: ${p => p.positionMobile}rem;
+  }
+`
+
+const StyledMenu = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  border: none;
+  text-align: left;
+
+  :hover ${MenuFlyout} {
+    display: flex;
+  }
+`
 
 const activeClassName = 'ACTIVE'
 const StyledMenuLinkButton = styled.div.attrs({
@@ -36,36 +68,6 @@ const StyledMenuLinkButton = styled.div.attrs({
   }
 `
 
-const StyledMenu = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  border: none;
-  text-align: left;
-`
-
-const MenuFlyout = styled.span<{ positionDesktop: string; positionMobile: string }>`
-  min-width: 4rem;
-  background-color: ${({ theme }) => theme.bg3};
-  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
-    0px 24px 32px rgba(0, 0, 0, 0.01);
-  border-radius: 12px;
-  padding: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  font-size: 1rem;
-  position: absolute;
-  top: 3rem;
-  right: ${p => p.positionDesktop}rem;
-  z-index: 100;
-  text-align: center;
-
-  @media only screen and (max-width: ${MEDIA_WIDTHS.upToExtraSmall}px) {
-    right: ${p => p.positionMobile}rem;
-  }
-`
-
 const MenuItem = styled(StyledInternalLink)`
   flex: 1;
   padding: 0.5rem 0.5rem;
@@ -86,16 +88,12 @@ interface MenuLinkProps {
     linkTitle: string
   }[]
   label: string
-  modal: ApplicationModal
   flyoutPositionDesktop: string
   flyoutPositionMobile: string
 }
 
-export default function MenuLink({ links, label, modal, flyoutPositionDesktop, flyoutPositionMobile }: MenuLinkProps) {
+export default function MenuLink({ links, label, flyoutPositionDesktop, flyoutPositionMobile }: MenuLinkProps) {
   const node = useRef<HTMLDivElement>()
-  const open = useModalOpen(modal)
-  const toggle = useToggleModal(modal)
-  useOnClickOutside(node, open ? toggle : undefined)
 
   const location = useLocation()
   const isActive = links.map(link => link.linkRef).includes(location.pathname)
@@ -103,21 +101,16 @@ export default function MenuLink({ links, label, modal, flyoutPositionDesktop, f
   return (
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
     <StyledMenu ref={node as any}>
-      <StyledMenuLinkButton onClick={toggle} className={isActive ? 'ACTIVE' : ''}>
-        {label}
-      </StyledMenuLinkButton>
-
-      {open && (
-        <MenuFlyout positionDesktop={flyoutPositionDesktop} positionMobile={flyoutPositionMobile}>
-          {links.map(link => {
-            return (
-              <MenuItem key={link.linkRef} id="link" to={link.linkRef} onClick={toggle}>
-                {link.linkTitle}
-              </MenuItem>
-            )
-          })}
-        </MenuFlyout>
-      )}
+      <StyledMenuLinkButton className={isActive ? 'ACTIVE' : ''}>{label}</StyledMenuLinkButton>
+      <MenuFlyout positionDesktop={flyoutPositionDesktop} positionMobile={flyoutPositionMobile}>
+        {links.map(link => {
+          return (
+            <MenuItem key={link.linkRef} id="link" to={link.linkRef}>
+              {link.linkTitle}
+            </MenuItem>
+          )
+        })}
+      </MenuFlyout>
     </StyledMenu>
   )
 }
