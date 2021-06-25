@@ -28,7 +28,7 @@ import { useTotalSupply } from '../../data/TotalSupply'
 import { usePair } from '../../data/Reserves'
 import usePrevious from '../../hooks/usePrevious'
 // import useUSDCPrice from '../../utils/useUSDCPrice'
-import { BIG_INT_ZERO, PFX, gAKITA } from '../../constants'
+import { BIG_INT_ZERO, PFX, AKITA, gAKITA } from '../../constants'
 
 const PageWrapper = styled(AutoColumn)`
   max-width: 640px;
@@ -89,12 +89,13 @@ const DataRow = styled(RowBetween)`
 interface ManageProps {
   currencyIdA: string
   currencyIdB: string
+  mainToken: Token
   rewardToken: Token
   stakingInfoProvider: (pairToFilterBy: Pair | null) => StakingInfo[]
   emoji: string
 }
 
-function Manage({ currencyIdA, currencyIdB, rewardToken, stakingInfoProvider, emoji }: ManageProps) {
+function Manage({ currencyIdA, currencyIdB, mainToken, rewardToken, stakingInfoProvider, emoji }: ManageProps) {
   const { account, chainId } = useActiveWeb3React()
 
   // get currencies and pair
@@ -106,14 +107,14 @@ function Manage({ currencyIdA, currencyIdB, rewardToken, stakingInfoProvider, em
   const stakingInfo = stakingInfoProvider(stakingTokenPair)?.[0]
 
   const avaxPool = currencyA === CAVAX || currencyB === CAVAX
-  const rewardTokenPool = tokenA === rewardToken || tokenB === rewardToken
+  const mainTokenPool = tokenA?.address === mainToken.address || tokenB?.address === mainToken.address
 
   let valueOfTotalStakedAmountInWavax: TokenAmount | undefined
   // let valueOfTotalStakedAmountInUSDC: CurrencyAmount | undefined
   let backgroundColor: string
   let token: Token | undefined
   const totalSupplyOfStakingToken = useTotalSupply(stakingInfo?.stakedAmount?.token)
-  const [, avaxRewardTokenPair] = usePair(CAVAX, rewardToken)
+  const [, avaxMainTokenPair] = usePair(CAVAX, mainToken)
   // let usdToken: Token | undefined
 
   // One of the tokens is AVAX
@@ -142,25 +143,25 @@ function Manage({ currencyIdA, currencyIdB, rewardToken, stakingInfoProvider, em
   }
 
   // One of the tokens is PFX / AKITA
-  else if (rewardTokenPool) {
-    let pfxAkita
-    if (tokenA && tokenA.equals(PFX[tokenA.chainId])) {
+  else if (mainTokenPool) {
+    let mainTokenInPair
+    if (tokenA && tokenA.equals(mainToken)) {
       token = tokenB
-      pfxAkita = tokenA
+      mainTokenInPair = tokenA
     } else {
       token = tokenA
-      pfxAkita = tokenB
+      mainTokenInPair = tokenB
     }
 
-    if (totalSupplyOfStakingToken && stakingTokenPair && avaxRewardTokenPair && tokenB && pfxAkita) {
+    if (totalSupplyOfStakingToken && stakingTokenPair && avaxMainTokenPair && tokenB && mainTokenInPair) {
       const oneToken = JSBI.BigInt(1000000000000000000)
-      const avaxPfxAkitaRatio = JSBI.divide(
-        JSBI.multiply(oneToken, avaxRewardTokenPair.reserveOf(WAVAX[tokenB.chainId]).raw),
-        avaxRewardTokenPair.reserveOf(pfxAkita).raw
+      const avaxMainTokenRatio = JSBI.divide(
+        JSBI.multiply(oneToken, avaxMainTokenPair.reserveOf(WAVAX[tokenB.chainId]).raw),
+        avaxMainTokenPair.reserveOf(mainTokenInPair).raw
       )
 
-      const valueOfPfxAkitaInAvax = JSBI.divide(
-        JSBI.multiply(stakingTokenPair.reserveOf(pfxAkita).raw, avaxPfxAkitaRatio),
+      const valueOfMainTokenInAvax = JSBI.divide(
+        JSBI.multiply(stakingTokenPair.reserveOf(mainTokenInPair).raw, avaxMainTokenRatio),
         oneToken
       )
 
@@ -168,20 +169,19 @@ function Manage({ currencyIdA, currencyIdB, rewardToken, stakingInfoProvider, em
         WAVAX[tokenB.chainId],
         JSBI.divide(
           JSBI.multiply(
-            JSBI.multiply(stakingInfo.totalStakedAmount.raw, valueOfPfxAkitaInAvax),
+            JSBI.multiply(stakingInfo.totalStakedAmount.raw, valueOfMainTokenInAvax),
             JSBI.BigInt(2) // this is b/c the value of LP shares are ~double the value of the wavax they entitle owner to
           ),
           totalSupplyOfStakingToken.raw
         )
       )
     }
-    // usdToken = pfxAkita
+    // usdToken = mainTokenInPair
   }
 
   // None of the tokens is AVAX nor PFX / AKITA
   else {
     if (tokenB) {
-      // TODO: Improve. This just sets the value to 0, but it does not necessarily have no value
       valueOfTotalStakedAmountInWavax = new TokenAmount(WAVAX[tokenB.chainId], JSBI.BigInt(0))
     }
   }
@@ -436,6 +436,7 @@ export function ManagePfx({
     <Manage
       currencyIdA={currencyIdA}
       currencyIdB={currencyIdB}
+      mainToken={PFX[chainId ?? ChainId.AVALANCHE]}
       rewardToken={PFX[chainId ?? ChainId.AVALANCHE]}
       stakingInfoProvider={usePfxStakingInfo}
       emoji={'🦊'}
@@ -454,6 +455,7 @@ export function ManageGAkita({
     <Manage
       currencyIdA={currencyIdA}
       currencyIdB={currencyIdB}
+      mainToken={AKITA[chainId ?? ChainId.AVALANCHE]}
       rewardToken={gAKITA[chainId ?? ChainId.AVALANCHE]}
       stakingInfoProvider={useGAkitaStakingInfo}
       emoji={'🐕'}

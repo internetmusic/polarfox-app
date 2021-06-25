@@ -16,7 +16,7 @@ import Loader from '../../components/Loader'
 import { useActiveWeb3React } from '../../hooks'
 import { ChainId, JSBI, Token } from '@polarfox/sdk'
 import { Countdown } from '../../components/earn/Countdown'
-import { gAKITA, PFX } from '../../constants'
+import { PFX, AKITA, gAKITA } from '../../constants'
 
 const PageWrapper = styled(AutoColumn)`
   max-width: 640px;
@@ -44,6 +44,7 @@ const DataRow = styled(RowBetween)`
 `
 
 interface EarnProps {
+  mainToken: Token
   rewardToken: Token
   rewardTokenUrl: string
   stakingInfo: StakingInfo[]
@@ -52,7 +53,15 @@ interface EarnProps {
   emoji: string
 }
 
-function Earn({ rewardToken, rewardTokenUrl, stakingInfo, hasStakingRewards, depositMessage, emoji }: EarnProps) {
+function Earn({
+  mainToken,
+  rewardToken,
+  rewardTokenUrl,
+  stakingInfo,
+  hasStakingRewards,
+  depositMessage,
+  emoji
+}: EarnProps) {
   const poolGroup = rewardToken.symbol?.toLowerCase() || ''
 
   return (
@@ -120,6 +129,7 @@ function Earn({ rewardToken, rewardTokenUrl, stakingInfo, hasStakingRewards, dep
                   <PoolCard
                     key={info.stakingRewardAddress}
                     stakingInfo={info}
+                    mainToken={mainToken}
                     rewardToken={rewardToken}
                     poolGroup={poolGroup}
                     emoji={emoji}
@@ -145,6 +155,7 @@ export function EarnPfx() {
 
   return (
     <Earn
+      mainToken={pfx}
       rewardToken={pfx}
       rewardTokenUrl="https://polarfox.io"
       stakingInfo={pfxStakingInfo}
@@ -159,6 +170,7 @@ export function EarnGAkita() {
   const gAkitaStakingInfo = useGAkitaStakingInfo()
   const { chainId } = useActiveWeb3React()
 
+  const akita = AKITA[chainId ?? ChainId.AVALANCHE]
   const gAkita = gAKITA[chainId ?? ChainId.AVALANCHE]
 
   const stakingRewardsExist = Boolean(
@@ -167,6 +179,7 @@ export function EarnGAkita() {
 
   return (
     <Earn
+      mainToken={akita}
       rewardToken={gAkita}
       rewardTokenUrl="https://akita.network"
       stakingInfo={gAkitaStakingInfo}

@@ -72,12 +72,13 @@ const BottomSection = styled.div<{ showBackground: boolean }>`
 
 interface PoolCardProps {
   stakingInfo: StakingInfo
+  mainToken: Token
   rewardToken: Token
   poolGroup: string
   emoji: string
 }
 
-export default function PoolCard({ stakingInfo, rewardToken, poolGroup, emoji }: PoolCardProps) {
+export default function PoolCard({ stakingInfo, mainToken, rewardToken, poolGroup, emoji }: PoolCardProps) {
   const token0 = stakingInfo.tokens[0]
   const token1 = stakingInfo.tokens[1]
 
@@ -91,7 +92,7 @@ export default function PoolCard({ stakingInfo, rewardToken, poolGroup, emoji }:
   if (avaxPool) {
     token = currency0 === CAVAX ? token1 : token0
   } else {
-    token = token0.equals(rewardToken) ? token1 : token0
+    token = token0.equals(mainToken) ? token1 : token0
   }
   // let valueOfTotalStakedAmountInUSDC: CurrencyAmount | undefined
   // get the color of the token

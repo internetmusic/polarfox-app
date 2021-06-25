@@ -1,6 +1,6 @@
 import { ChainId, CurrencyAmount, JSBI, Token, TokenAmount, WAVAX, Pair } from '@polarfox/sdk'
 import { useMemo } from 'react'
-import { PFX, AKITA, WETH, USDT } from '../../constants'
+import { PFX, AKITA, gAKITA, WETH, USDT } from '../../constants'
 import { STAKING_REWARDS_INTERFACE } from '../../constants/abis/staking-rewards'
 import { PairState, usePair, usePairs } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
@@ -89,11 +89,11 @@ export interface StakingInfo {
   ) => TokenAmount
 }
 
-const calculateTotalStakedAmountInAvaxFromPfx = function(
+const calculateTotalStakedAmountInAvaxFromMainToken = function(
   totalSupply: JSBI,
-  avaxPfxPairReserveOfPfx: JSBI,
-  avaxPfxPairReserveOfOtherToken: JSBI,
-  stakingTokenPairReserveOfPfx: JSBI,
+  avaxMainTokenPairReserveOfMainToken: JSBI,
+  avaxMainTokenPairReserveOfOtherToken: JSBI,
+  stakingTokenPairReserveOfMainToken: JSBI,
   totalStakedAmount: TokenAmount,
   chainId: ChainId | undefined
 ): TokenAmount {
@@ -106,21 +106,24 @@ const calculateTotalStakedAmountInAvaxFromPfx = function(
     return new TokenAmount(chainId ? WAVAX[chainId] : WAVAX[ChainId.AVALANCHE], JSBI.BigInt(0))
   }
 
-  if (JSBI.equal(avaxPfxPairReserveOfPfx, JSBI.BigInt(0))) {
-    console.error('Division by zero - avaxPfxPairReserveOfPfx is zero')
+  if (JSBI.equal(avaxMainTokenPairReserveOfMainToken, JSBI.BigInt(0))) {
+    console.error('Division by zero - avaxMainTokenPairReserveOfMainToken is zero')
   }
 
-  const avaxPfxRatio = JSBI.notEqual(avaxPfxPairReserveOfPfx, JSBI.BigInt(0))
-    ? JSBI.divide(JSBI.multiply(oneToken, avaxPfxPairReserveOfOtherToken), avaxPfxPairReserveOfPfx)
+  const avaxMainTokenRatio = JSBI.notEqual(avaxMainTokenPairReserveOfMainToken, JSBI.BigInt(0))
+    ? JSBI.divide(JSBI.multiply(oneToken, avaxMainTokenPairReserveOfOtherToken), avaxMainTokenPairReserveOfMainToken)
     : JSBI.BigInt(0)
 
-  const valueOfPfxInAvax = JSBI.divide(JSBI.multiply(stakingTokenPairReserveOfPfx, avaxPfxRatio), oneToken)
+  const valueOfMainTokenInAvax = JSBI.divide(
+    JSBI.multiply(stakingTokenPairReserveOfMainToken, avaxMainTokenRatio),
+    oneToken
+  )
 
   return new TokenAmount(
     chainId ? WAVAX[chainId] : WAVAX[ChainId.AVALANCHE],
     JSBI.divide(
       JSBI.multiply(
-        JSBI.multiply(totalStakedAmount.raw, valueOfPfxInAvax),
+        JSBI.multiply(totalStakedAmount.raw, valueOfMainTokenInAvax),
         JSBI.BigInt(2) // this is b/c the value of LP shares are ~double the value of the wavax they entitle owner to
       ),
       totalSupply
@@ -156,10 +159,12 @@ function useStakingInfo(
   stakingRewardsInfo: {
     [chainId in ChainId]?: StakingRewardsInfo[] | undefined
   },
-  pairToFilterBy?: Pair | null
+  mainToken: Token,
+  rewardToken: Token,
+  pairToFilterBy?: Pair | null,
+  chainId?: ChainId,
+  account?: string | null | undefined
 ): StakingInfo[] {
-  const { chainId, account } = useActiveWeb3React()
-
   const info = useMemo(
     () =>
       chainId
@@ -175,7 +180,6 @@ function useStakingInfo(
     [chainId, pairToFilterBy, stakingRewardsInfo]
   )
 
-  const pfx = chainId ? PFX[chainId] : PFX[ChainId.AVALANCHE]
   const wavax = chainId ? WAVAX[chainId] : WAVAX[ChainId.AVALANCHE]
 
   const rewardsAddresses = useMemo(() => info.map(({ stakingRewardAddress }) => stakingRewardAddress), [info])
@@ -188,7 +192,7 @@ function useStakingInfo(
   const earnedAmounts = useMultipleContractSingleData(rewardsAddresses, STAKING_REWARDS_INTERFACE, 'earned', accountArg)
   const totalSupplies = useMultipleContractSingleData(rewardsAddresses, STAKING_REWARDS_INTERFACE, 'totalSupply')
   const pairs = usePairs(tokens)
-  const [avaxPfxPairState, avaxPfxPair] = usePair(wavax, pfx)
+  const [avaxMainTokenPairState, avaxMainTokenPair] = usePair(wavax, mainToken)
 
   // tokens per second, constants
   const rewardRates = useMultipleContractSingleData(
@@ -207,7 +211,7 @@ function useStakingInfo(
   )
 
   return useMemo(() => {
-    if (!chainId || !pfx) return []
+    if (!chainId || !mainToken) return []
 
     return rewardsAddresses.reduce<StakingInfo[]>((memo, rewardsAddress, index) => {
       // these two are dependent on account
@@ -232,9 +236,9 @@ function useStakingInfo(
         periodFinishState &&
         !periodFinishState.loading &&
         pair &&
-        avaxPfxPair &&
+        avaxMainTokenPair &&
         pairState !== PairState.LOADING &&
-        avaxPfxPairState !== PairState.LOADING
+        avaxMainTokenPairState !== PairState.LOADING
       ) {
         if (
           balanceState?.error ||
@@ -244,8 +248,8 @@ function useStakingInfo(
           periodFinishState.error ||
           pairState === PairState.INVALID ||
           pairState === PairState.NOT_EXISTS ||
-          avaxPfxPairState === PairState.INVALID ||
-          avaxPfxPairState === PairState.NOT_EXISTS
+          avaxMainTokenPairState === PairState.INVALID ||
+          avaxMainTokenPairState === PairState.NOT_EXISTS
         ) {
           console.error('Failed to load staking rewards info')
           return memo
@@ -260,16 +264,16 @@ function useStakingInfo(
         const totalSupply = JSBI.BigInt(totalSupplyState.result?.[0])
         const stakedAmount = new TokenAmount(dummyPair.liquidityToken, JSBI.BigInt(balanceState?.result?.[0] ?? 0))
         const totalStakedAmount = new TokenAmount(dummyPair.liquidityToken, totalSupply)
-        const totalRewardRate = new TokenAmount(pfx, JSBI.BigInt(rewardRateState.result?.[0]))
+        const totalRewardRate = new TokenAmount(rewardToken, JSBI.BigInt(rewardRateState.result?.[0]))
         const isAvaxPool = tokens[0].equals(WAVAX[tokens[0].chainId]) || tokens[1].equals(WAVAX[tokens[1].chainId])
 
         const totalStakedInWavax = isAvaxPool
           ? calculateTotalStakedAmountInAvax(totalSupply, pair.reserveOf(wavax).raw, totalStakedAmount, chainId)
-          : calculateTotalStakedAmountInAvaxFromPfx(
+          : calculateTotalStakedAmountInAvaxFromMainToken(
               totalSupply,
-              avaxPfxPair.reserveOf(pfx).raw,
-              avaxPfxPair.reserveOf(WAVAX[tokens[1].chainId]).raw,
-              pair.involvesToken(pfx) ? pair.reserveOf(pfx).raw : JSBI.BigInt(0),
+              avaxMainTokenPair.reserveOf(mainToken).raw,
+              avaxMainTokenPair.reserveOf(WAVAX[tokens[1].chainId]).raw,
+              pair.involvesToken(mainToken) ? pair.reserveOf(mainToken).raw : JSBI.BigInt(0),
               totalStakedAmount,
               chainId
             )
@@ -280,10 +284,10 @@ function useStakingInfo(
           totalRewardRate: TokenAmount
         ): TokenAmount => {
           if (JSBI.equal(totalStakedAmount.raw, JSBI.BigInt(0))) {
-            return new TokenAmount(pfx, JSBI.BigInt(0))
+            return new TokenAmount(rewardToken, JSBI.BigInt(0))
           }
           return new TokenAmount(
-            pfx,
+            rewardToken,
             JSBI.greaterThan(totalStakedAmount.raw, JSBI.BigInt(0))
               ? JSBI.divide(JSBI.multiply(totalRewardRate.raw, stakedAmount.raw), totalStakedAmount.raw)
               : JSBI.BigInt(0)
@@ -298,7 +302,7 @@ function useStakingInfo(
           stakingRewardAddress: rewardsAddress,
           tokens: tokens,
           periodFinish: periodFinishMs > 0 ? new Date(periodFinishMs) : undefined,
-          earnedAmount: new TokenAmount(pfx, JSBI.BigInt(earnedAmountState?.result?.[0] ?? 0)),
+          earnedAmount: new TokenAmount(rewardToken, JSBI.BigInt(earnedAmountState?.result?.[0] ?? 0)),
           rewardRate: individualRewardRate,
           totalRewardRate: totalRewardRate,
           stakedAmount: stakedAmount,
@@ -318,19 +322,27 @@ function useStakingInfo(
     rewardRates,
     rewardsAddresses,
     totalSupplies,
-    avaxPfxPairState,
+    avaxMainTokenPairState,
     pairs,
-    pfx,
-    avaxPfxPair
+    mainToken,
+    rewardToken,
+    avaxMainTokenPair
   ])
 }
 
 export function usePfxStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
-  return useStakingInfo(PFX_STAKING_REWARDS_INFO, pairToFilterBy)
+  const { chainId, account } = useActiveWeb3React()
+
+  const pfx = chainId ? PFX[chainId] : PFX[ChainId.AVALANCHE]
+  return useStakingInfo(PFX_STAKING_REWARDS_INFO, pfx, pfx, pairToFilterBy, chainId, account)
 }
 
 export function useGAkitaStakingInfo(pairToFilterBy?: Pair | null): StakingInfo[] {
-  return useStakingInfo(GAKITA_STAKING_REWARDS_INFO, pairToFilterBy)
+  const { chainId, account } = useActiveWeb3React()
+
+  const akita = chainId ? AKITA[chainId] : AKITA[ChainId.AVALANCHE]
+  const gAkita = chainId ? gAKITA[chainId] : gAKITA[ChainId.AVALANCHE]
+  return useStakingInfo(GAKITA_STAKING_REWARDS_INFO, akita, gAkita, pairToFilterBy, chainId, account)
 }
 
 export function useTotalPfxEarned(): TokenAmount | undefined {
