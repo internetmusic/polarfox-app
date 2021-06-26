@@ -93,9 +93,10 @@ interface ManageProps {
   rewardToken: Token
   stakingInfoProvider: (pairToFilterBy: Pair | null) => StakingInfo[]
   emoji: string
+  link: string
 }
 
-function Manage({ currencyIdA, currencyIdB, mainToken, rewardToken, stakingInfoProvider, emoji }: ManageProps) {
+function Manage({ currencyIdA, currencyIdB, mainToken, rewardToken, stakingInfoProvider, emoji, link }: ManageProps) {
   const { account, chainId } = useActiveWeb3React()
 
   // get currencies and pair
@@ -290,7 +291,8 @@ function Manage({ currencyIdA, currencyIdB, mainToken, rewardToken, stakingInfoP
                 borderRadius="8px"
                 width={'fit-content'}
                 as={Link}
-                to={`/add/${currencyA && currencyId(currencyA)}/${currencyB && currencyId(currencyB)}`}
+                to={`/add/${currencyA && currencyId(currencyA)}/${currencyB &&
+                  currencyId(currencyB)}?lm=/${link}/${currencyIdA}/${currencyIdB}`}
               >
                 {`Add ${currencyA?.symbol}-${currencyB?.symbol} liquidity`}
               </ButtonPrimary>
@@ -440,6 +442,7 @@ export function ManagePfx({
       rewardToken={PFX[chainId ?? ChainId.AVALANCHE]}
       stakingInfoProvider={usePfxStakingInfo}
       emoji={'🦊'}
+      link={'pfx'}
     />
   )
 }
@@ -459,6 +462,7 @@ export function ManageGAkita({
       rewardToken={gAKITA[chainId ?? ChainId.AVALANCHE]}
       stakingInfoProvider={useGAkitaStakingInfo}
       emoji={'🐕'}
+      link={'gakita'}
     />
   )
 }

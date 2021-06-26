@@ -39,6 +39,7 @@ import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { currencyId } from '../../utils/currencyId'
 import { PoolPriceBar } from './PoolPriceBar'
 import { ChainId } from '@polarfox/sdk'
+import { useLocation } from 'react-router-dom'
 
 export default function AddLiquidity({
   match: {
@@ -311,10 +312,15 @@ export default function AddLiquidity({
 
   const isCreate = history.location.pathname.includes('/create')
 
+  const urlParameters = useLocation().search
+
+  const returnLink =
+    urlParameters && urlParameters.startsWith('?lm=') ? urlParameters.substring(4, urlParameters.length) : undefined
+
   return (
     <>
       <AppBody>
-        <AddRemoveTabs creating={isCreate} adding={true} />
+        <AddRemoveTabs creating={isCreate} adding={true} link={returnLink} />
         <Wrapper>
           <TransactionConfirmationModal
             isOpen={showConfirm}

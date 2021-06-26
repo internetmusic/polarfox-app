@@ -80,11 +80,19 @@ export function FindPoolTabs() {
   )
 }
 
-export function AddRemoveTabs({ adding, creating }: { adding: boolean; creating: boolean }) {
+interface AddRemoveTabsProps {
+  adding: boolean
+  creating: boolean
+  link?: string
+}
+
+export function AddRemoveTabs({ adding, creating, link }: AddRemoveTabsProps) {
+  const historyLink = link ?? '/pool'
+
   return (
     <Tabs>
       <RowBetween style={{ padding: '1rem' }}>
-        <HistoryLink to="/pool">
+        <HistoryLink to={historyLink}>
           <StyledArrowLeft />
         </HistoryLink>
         <ActiveText>{creating ? 'Create a pair' : adding ? 'Add Liquidity' : 'Remove Liquidity'}</ActiveText>
