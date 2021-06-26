@@ -96,7 +96,7 @@ export default function MenuLink({ links, label, flyoutPositionDesktop, flyoutPo
   const node = useRef<HTMLDivElement>()
 
   const location = useLocation()
-  const isActive = links.map(link => link.linkRef).includes(location.pathname)
+  const isActive = links.map(link => link.linkRef).find(linkRef => location.pathname.includes(linkRef))
 
   return (
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
