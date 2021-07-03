@@ -136,6 +136,9 @@ function Manage({ currencyIdA, currencyIdB, mainToken, rewardToken, stakingInfoP
           )
         : JSBI.BigInt(0)
 
+      if (JSBI.equal(totalSupplyOfStakingToken.raw, JSBI.BigInt(0)))
+        console.warn('totalSupplyOfStakingToken is zero, amount will be wrong')
+
       valueOfTotalStakedAmountInWavax = new TokenAmount(wavax, amount)
     }
 
@@ -156,26 +159,35 @@ function Manage({ currencyIdA, currencyIdB, mainToken, rewardToken, stakingInfoP
 
     if (totalSupplyOfStakingToken && stakingTokenPair && avaxMainTokenPair && tokenB && mainTokenInPair) {
       const oneToken = JSBI.BigInt(1000000000000000000)
-      const avaxMainTokenRatio = JSBI.divide(
-        JSBI.multiply(oneToken, avaxMainTokenPair.reserveOf(WAVAX[tokenB.chainId]).raw),
-        avaxMainTokenPair.reserveOf(mainTokenInPair).raw
-      )
+      const avaxMainTokenRatio = JSBI.notEqual(avaxMainTokenPair.reserveOf(mainTokenInPair).raw, JSBI.BigInt(0))
+        ? JSBI.divide(
+            JSBI.multiply(oneToken, avaxMainTokenPair.reserveOf(WAVAX[tokenB.chainId]).raw),
+            avaxMainTokenPair.reserveOf(mainTokenInPair).raw
+          )
+        : JSBI.BigInt(0)
+
+      if (JSBI.equal(avaxMainTokenRatio, JSBI.BigInt(0))) console.warn('avaxMainTokenRatio is zero')
 
       const valueOfMainTokenInAvax = JSBI.divide(
         JSBI.multiply(stakingTokenPair.reserveOf(mainTokenInPair).raw, avaxMainTokenRatio),
         oneToken
       )
 
-      valueOfTotalStakedAmountInWavax = new TokenAmount(
-        WAVAX[tokenB.chainId],
-        JSBI.divide(
-          JSBI.multiply(
-            JSBI.multiply(stakingInfo.totalStakedAmount.raw, valueOfMainTokenInAvax),
-            JSBI.BigInt(2) // this is b/c the value of LP shares are ~double the value of the wavax they entitle owner to
-          ),
-          totalSupplyOfStakingToken.raw
-        )
-      )
+      valueOfTotalStakedAmountInWavax = JSBI.notEqual(totalSupplyOfStakingToken.raw, JSBI.BigInt(0))
+        ? new TokenAmount(
+            WAVAX[tokenB.chainId],
+            JSBI.divide(
+              JSBI.multiply(
+                JSBI.multiply(stakingInfo.totalStakedAmount.raw, valueOfMainTokenInAvax),
+                JSBI.BigInt(2) // this is b/c the value of LP shares are ~double the value of the wavax they entitle owner to
+              ),
+              totalSupplyOfStakingToken.raw
+            )
+          )
+        : new TokenAmount(WAVAX[tokenB.chainId], JSBI.BigInt(0))
+
+      if (JSBI.equal(totalSupplyOfStakingToken.raw, JSBI.BigInt(0)))
+        console.warn('totalSupplyOfStakingToken is zero, valueOfTotalStakedAmountInWavax will be wrong')
     }
     // usdToken = mainTokenInPair
   }

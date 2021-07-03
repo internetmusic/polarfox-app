@@ -28,12 +28,14 @@ function withVesting(before: JSBI, time: BigNumber, amount: number, start: numbe
       return JSBI.add(before, JSBI.BigInt(amount))
     } else {
       if ((typeof cliff === 'number' && time.gte(cliff)) || typeof cliff === 'undefined') {
+        const endStartDifference = JSBI.subtract(JSBI.BigInt(end), JSBI.BigInt(start))
+
+        if (JSBI.equal(endStartDifference, JSBI.BigInt(0)))
+          console.warn('endStartDifference is zero, withVesting will be wrong')
+
         return JSBI.add(
           before,
-          JSBI.divide(
-            JSBI.multiply(JSBI.BigInt(amount), JSBI.BigInt(time.sub(start).toString())),
-            JSBI.subtract(JSBI.BigInt(end), JSBI.BigInt(start))
-          )
+          JSBI.divide(JSBI.multiply(JSBI.BigInt(amount), JSBI.BigInt(time.sub(start).toString())), endStartDifference)
         )
       }
     }

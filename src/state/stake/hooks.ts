@@ -98,21 +98,15 @@ const calculateTotalStakedAmountInAvaxFromMainToken = function(
   chainId: ChainId | undefined
 ): TokenAmount {
   const oneToken = JSBI.BigInt(1000000000000000000)
-  if (
-    JSBI.equal(totalSupply, JSBI.BigInt(0)) ||
-    JSBI.equal(totalSupply, JSBI.BigInt(0)) ||
-    JSBI.equal(totalSupply, JSBI.BigInt(0))
-  ) {
+  if (JSBI.equal(totalSupply, JSBI.BigInt(0)))
     return new TokenAmount(chainId ? WAVAX[chainId] : WAVAX[ChainId.AVALANCHE], JSBI.BigInt(0))
-  }
-
-  if (JSBI.equal(avaxMainTokenPairReserveOfMainToken, JSBI.BigInt(0))) {
-    console.error('Division by zero - avaxMainTokenPairReserveOfMainToken is zero')
-  }
 
   const avaxMainTokenRatio = JSBI.notEqual(avaxMainTokenPairReserveOfMainToken, JSBI.BigInt(0))
     ? JSBI.divide(JSBI.multiply(oneToken, avaxMainTokenPairReserveOfOtherToken), avaxMainTokenPairReserveOfMainToken)
     : JSBI.BigInt(0)
+
+  if (JSBI.equal(avaxMainTokenPairReserveOfMainToken, JSBI.BigInt(0)))
+    console.warn('avaxMainTokenPairReserveOfMainToken is zero, avaxMainTokenRatio will be wrong')
 
   const valueOfMainTokenInAvax = JSBI.divide(
     JSBI.multiply(stakingTokenPairReserveOfMainToken, avaxMainTokenRatio),
@@ -286,6 +280,10 @@ function useStakingInfo(
           if (JSBI.equal(totalStakedAmount.raw, JSBI.BigInt(0))) {
             return new TokenAmount(rewardToken, JSBI.BigInt(0))
           }
+
+          if (JSBI.equal(totalStakedAmount.raw, JSBI.BigInt(0)))
+            console.warn('totalStakedAmount is zero, hypotheticalRewardRate will be wrong')
+
           return new TokenAmount(
             rewardToken,
             JSBI.greaterThan(totalStakedAmount.raw, JSBI.BigInt(0))
