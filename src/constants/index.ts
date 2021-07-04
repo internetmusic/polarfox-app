@@ -11,7 +11,7 @@ export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
 }
 
 export const LANDING_PAGE = 'https://polarfox.io/'
-export const ANALYTICS_PAGE = 'https://analytics.polarfox.io/'
+export const ANALYTICS_PAGE = 'https://analytics-test.polarfox.io/'
 export const FORUM_PAGE = 'https://forum.polarfox.io/'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -22,7 +22,7 @@ export const PFX_GOVERNANCE_ADDRESS: { [chainId in ChainId]: string } = {
 }
 
 export const AKITA_GOVERNANCE_ADDRESS: { [chainId in ChainId]: string } = {
-  [ChainId.FUJI]: '0xd848A6A81769b8829a3dbaD27Ba0EAA74BC0b12b', // !! TODO Update
+  [ChainId.FUJI]: '0x09bf2BE41293b9207e9AA1C12348Ec150416b669', // !! TODO Update
   [ChainId.AVALANCHE]: '' // TODO: Add
 }
 
