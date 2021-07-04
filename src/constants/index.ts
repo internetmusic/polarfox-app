@@ -6,12 +6,12 @@ import { injected } from '../connectors'
 export const GAS_PRICE = 225
 
 export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
-  [ChainId.FUJI]: '0xe84f91A624D4625a7acE364d1E2564Efa735DB21',
+  [ChainId.FUJI]: '0x558f42Ba48a31D9A5646217EA261427878dCf845',
   [ChainId.AVALANCHE]: '' // TODO: Add
 }
 
 export const LANDING_PAGE = 'https://polarfox.io/'
-export const ANALYTICS_PAGE = 'https://info.polarfox.io/'
+export const ANALYTICS_PAGE = 'https://analytics.polarfox.io/'
 export const FORUM_PAGE = 'https://forum.polarfox.io/'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -44,7 +44,7 @@ export const AKITA: { [chainId in ChainId]: Token } = {
 export const gAKITA: { [chainId in ChainId]: Token } = {
   [ChainId.FUJI]: new Token(
     ChainId.FUJI,
-    '0x8BAb1Be3571a54e8dB6b975eb39ceDE251A1C6dF',
+    '0x2E5bC8F65D804c2e6352cF372FBacbAa9E7f51ae',
     18,
     'gAKITA',
     'Akita Inu Governance Token'

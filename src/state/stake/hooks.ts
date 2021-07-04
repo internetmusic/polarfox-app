@@ -24,23 +24,23 @@ export const PFX_STAKING_REWARDS_INFO: {
   [ChainId.FUJI]: [
     {
       tokens: [PFX[ChainId.FUJI], WAVAX[ChainId.FUJI]],
-      stakingRewardAddress: '0x5cb5756c1403E49DB7C12a94Ceb21322B665A8E1'
+      stakingRewardAddress: '0xa1Ae93D4C9c4271297653CF654d0B4d5105d8251'
     },
     {
       tokens: [PFX[ChainId.FUJI], WETH[ChainId.FUJI]],
-      stakingRewardAddress: '0xeF9C6C8417f1745353B723Ea27e30d232e2e0887'
+      stakingRewardAddress: '0xCfB90b451D0f2FF417820D3A79b95F12EE001e03'
     },
     {
       tokens: [PFX[ChainId.FUJI], USDT[ChainId.FUJI]],
-      stakingRewardAddress: '0x0e64274785686c4e9D538944d591c2Fb08a5e59d'
+      stakingRewardAddress: '0x25A3887a3Faf119Aa6420268305DB0AaFBe31B12'
     },
     {
       tokens: [WAVAX[ChainId.FUJI], WETH[ChainId.FUJI]],
-      stakingRewardAddress: '0x2D97036C126c89b93cb27aE122680fcbA653cbeb'
+      stakingRewardAddress: '0x3e6B8a36bf6De077BBBa89D93f3cD6B7dba6aCc4'
     },
     {
       tokens: [WAVAX[ChainId.FUJI], USDT[ChainId.FUJI]],
-      stakingRewardAddress: '0x5Fa9D9ed86EA07793b2a733C7D3b54B0726B28FD'
+      stakingRewardAddress: '0xc1DDC5A427465ffb913CF247a92DdE84443a252d'
     }
   ]
 }
@@ -52,11 +52,11 @@ export const GAKITA_STAKING_REWARDS_INFO: {
   [ChainId.FUJI]: [
     {
       tokens: [AKITA[ChainId.FUJI], PFX[ChainId.FUJI]],
-      stakingRewardAddress: '0x86Ff3c7261Fba8A3211Ab657e18a532413aBBaca'
+      stakingRewardAddress: '0xcb9bD879f44B00B3223EBc2347aa7C97B470c3a5'
     },
     {
       tokens: [AKITA[ChainId.FUJI], WAVAX[ChainId.FUJI]],
-      stakingRewardAddress: '0x8D56F76ceDBF5fe08BF9aE6d42DdeDB25d58913a'
+      stakingRewardAddress: '0x0a6e5bFe21B7612f1841e4956e7964a8AE8380e7'
     }
   ]
 }
