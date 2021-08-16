@@ -1,31 +1,31 @@
-import { ChainId, TokenAmount } from '@polarfox/sdk'
-import React, { useState } from 'react'
-import { Text } from 'rebass'
-import { NavLink } from 'react-router-dom'
-import { darken } from 'polished'
-import { useTranslation } from 'react-i18next'
+import {ChainId, TokenAmount} from '@polarfox/sdk'
+import React, {useState} from 'react'
+import {Text} from 'rebass'
+import {NavLink} from 'react-router-dom'
+import {darken} from 'polished'
+import {useTranslation} from 'react-i18next'
 
 import styled from 'styled-components'
 
 import Logo from '../../assets/svg/icon.png'
 import LogoDark from '../../assets/svg/icon.png'
-import { useActiveWeb3React } from '../../hooks'
-import { useDarkModeManager } from '../../state/user/hooks'
-import { useETHBalances, useAggregatePfxBalance } from '../../state/wallet/hooks'
-import { CardNoise } from '../earn/styled'
-import { CountUp } from 'use-count-up'
-import { TYPE, ExternalLink } from '../../theme'
+import {useActiveWeb3React} from '../../hooks'
+import {useDarkModeManager} from '../../state/user/hooks'
+import {useAggregatePfxBalance, useETHBalances} from '../../state/wallet/hooks'
+import {CardNoise} from '../earn/styled'
+import {CountUp} from 'use-count-up'
+import {ExternalLink, TYPE} from '../../theme'
 
-import { BlueCard, LightModeBlueCard } from '../Card'
+import {BlueCard, LightModeBlueCard} from '../Card'
 import Settings from '../Settings'
 import Menu from '../Menu'
 
-import Row, { RowFixed } from '../Row'
+import Row, {RowFixed} from '../Row'
 import Web3Status from '../Web3Status'
 import Modal from '../Modal'
 import PfxBalanceContent from './PfxBalanceContent'
 import usePrevious from '../../hooks/usePrevious'
-import { ANALYTICS_PAGE, FORUM_PAGE } from '../../constants'
+import {ANALYTICS_PAGE, FORUM_PAGE} from '../../constants'
 
 const HeaderFrame = styled.div`
   display: grid;
@@ -347,7 +347,7 @@ export default function Header() {
                     </TYPE.white>
                   </HideSmall>
                 )}
-                PFX
+                CCIM
               </PFXAmount>
               <CardNoise />
             </PFXWrapper>
