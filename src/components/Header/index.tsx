@@ -300,22 +300,22 @@ export default function Header() {
             {t('pool')}
           </StyledNavLink>
           <StyledNavLink id={`stake-nav-link`} to={'/pfx'}>
-            PFX
+            CopyrightCoins
           </StyledNavLink>
           <StyledNavLink id={`stake-nav-link`} to={'/vote-pfx'}>
-            PFX Governance
+            CCIM Governance
           </StyledNavLink>
           <StyledNavLink id={`stake-nav-link`} to={'/gakita'}>
-            gAKITA
+            Royalty Tokens
           </StyledNavLink>
           <StyledNavLink id={`stake-nav-link`} to={'/vote-gakita'}>
-            AKITA Governance
+            ROY Governance
           </StyledNavLink>
           <StyledExternalLink id={`info-nav-link`} href={ANALYTICS_PAGE}>
-            Charts <span style={{ fontSize: '11px' }}>↗</span>
+            Copyright Flow <span style={{ fontSize: '11px' }}>↗</span>
           </StyledExternalLink>
           <StyledExternalLink id={`gov-nav-link`} href={FORUM_PAGE}>
-            Forum <span style={{ fontSize: '11px' }}>↗</span>
+            CopyrightCoins <span style={{ fontSize: '11px' }}>↗</span>
           </StyledExternalLink>
         </HeaderLinks>
       </HeaderRow>
