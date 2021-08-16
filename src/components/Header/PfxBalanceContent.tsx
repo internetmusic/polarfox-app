@@ -1,20 +1,20 @@
-import { ChainId, TokenAmount, WAVAX, JSBI } from '@polarfox/sdk'
-import React, { useMemo } from 'react'
-import { X } from 'react-feather'
+import {ChainId, JSBI, TokenAmount, WAVAX} from '@polarfox/sdk'
+import React, {useMemo} from 'react'
+import {X} from 'react-feather'
 import styled from 'styled-components'
-import pfxLogo from '../../assets/images/pfx-logo.png'
-import { PFX } from '../../constants'
-import { useTotalSupply } from '../../data/TotalSupply'
-import { useActiveWeb3React } from '../../hooks'
+import pfxLogo from '../../assets/images/CF-black.svg'
+import {PFX} from '../../constants'
+import {useTotalSupply} from '../../data/TotalSupply'
+import {useActiveWeb3React} from '../../hooks'
 import useCurrentBlockTimestamp from '../../hooks/useCurrentBlockTimestamp'
-import { useTotalPfxEarned } from '../../state/stake/hooks'
-import { useAggregatePfxBalance, useTokenBalance } from '../../state/wallet/hooks'
-import { StyledInternalLink, TYPE, PfxTokenAnimated } from '../../theme'
-import { computePfxCirculation } from '../../utils/computePfxCirculation'
-import { AutoColumn } from '../Column'
-import { RowBetween } from '../Row'
-import { Break, CardBGImage, CardNoise, CardSection, DataCard } from '../earn/styled'
-import { usePair } from '../../data/Reserves'
+import {useTotalPfxEarned} from '../../state/stake/hooks'
+import {useAggregatePfxBalance, useTokenBalance} from '../../state/wallet/hooks'
+import {PfxTokenAnimated, StyledInternalLink, TYPE} from '../../theme'
+import {computePfxCirculation} from '../../utils/computePfxCirculation'
+import {AutoColumn} from '../Column'
+import {RowBetween} from '../Row'
+import {Break, CardBGImage, CardNoise, CardSection, DataCard} from '../earn/styled'
+import {usePair} from '../../data/Reserves'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;
@@ -78,7 +78,7 @@ export default function PfxBalanceContent({ setShowPfxBalanceModal }: { setShowP
         <CardNoise />
         <CardSection gap="md">
           <RowBetween>
-            <TYPE.white color="white">Your PFX Breakdown</TYPE.white>
+            <TYPE.white color="white">Your CCIM Breakdown</TYPE.white>
             <StyledClose stroke="white" onClick={() => setShowPfxBalanceModal(false)} />
           </RowBetween>
         </CardSection>
@@ -116,11 +116,11 @@ export default function PfxBalanceContent({ setShowPfxBalanceModal }: { setShowP
         <CardSection gap="sm">
           <AutoColumn gap="md">
             <RowBetween>
-              <TYPE.white color="white">PFX price:</TYPE.white>
+              <TYPE.white color="white">CCIM price:</TYPE.white>
               <TYPE.white color="white">{pfxPrice?.toFixed(5) ?? '-'} AVAX</TYPE.white>
             </RowBetween>
             <RowBetween>
-              <TYPE.white color="white">PFX in circulation:</TYPE.white>
+              <TYPE.white color="white">CCIM in circulation:</TYPE.white>
               <TYPE.white color="white">{circulation?.toFixed(0, { groupSeparator: ',' })}</TYPE.white>
             </RowBetween>
             <RowBetween>
