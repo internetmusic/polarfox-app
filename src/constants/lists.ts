@@ -2,7 +2,6 @@
 // TODO: Add Avalanche token lists
 // export const FUJI_TOKEN_LIST =
 //  'https://raw.githubusercontent.com/Polarfox-DEX/polarfox-token-lists/master/43113/fuji-token-list.json'
-
 export const FUJI_TOKEN_LIST =
   'https://raw.githubusercontent.com/internetmusic/copyright-token-list/master/43113/fuji-token-list.json'
 
