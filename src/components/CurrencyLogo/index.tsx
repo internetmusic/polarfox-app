@@ -1,13 +1,15 @@
-import { Currency, CAVAX, Token } from '@polarfox/sdk'
-import React, { useMemo } from 'react'
+import {CAVAX, Currency, Token} from '@polarfox/sdk'
+import React, {useMemo} from 'react'
 import styled from 'styled-components'
 
-import AvaxLogo from '../../assets/images/avalanche_token_round.png'
-import PfxLogo from '../../assets/images/pfx-logo.png'
+// import AvaxLogo from '../../assets/images/avalanche_token_round.png'
+import AvaxLogo from 'https://caas.fromthe.cc/ipfs/QmUsczfiSdfDhRBxdypKiwCRizEtu2bsNgU3WFNDFiTm4v'
+
+import PfxLogo from '../../assets/images/CF-black.svg'
 import AkitaLogo from '../../assets/images/akita-logo.png'
 
 import useHttpLocations from '../../hooks/useHttpLocations'
-import { WrappedTokenInfo } from '../../state/lists/hooks'
+import {WrappedTokenInfo} from '../../state/lists/hooks'
 import Logo from '../Logo'
 
 const getTokenLogoURL = (address: string) =>
