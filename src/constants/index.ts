@@ -10,9 +10,9 @@ export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
   [ChainId.AVALANCHE]: '' // TODO: Add
 }
 
-export const LANDING_PAGE = 'https://polarfox.io/'
-export const ANALYTICS_PAGE = 'https://info.polarfox.io/'
-export const FORUM_PAGE = 'https://forum.polarfox.io/'
+export const LANDING_PAGE = 'https://swap.copyrightspool.com/'
+export const ANALYTICS_PAGE = 'https://Copyrightflow.com/'
+export const FORUM_PAGE = 'https://copyrightcoins.com/'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
