@@ -299,18 +299,6 @@ export default function Header() {
           >
             {t('pool')}
           </StyledNavLink>
-          <StyledNavLink id={`stake-nav-link`} to={'/pfx'}>
-            CopyrightCoins
-          </StyledNavLink>
-          <StyledNavLink id={`stake-nav-link`} to={'/vote-pfx'}>
-            CCIM Governance
-          </StyledNavLink>
-          <StyledNavLink id={`stake-nav-link`} to={'/gakita'}>
-            Royalty Tokens
-          </StyledNavLink>
-          <StyledNavLink id={`stake-nav-link`} to={'/vote-gakita'}>
-            ROY Governance
-          </StyledNavLink>
           <StyledExternalLink id={`info-nav-link`} href={ANALYTICS_PAGE}>
             Copyright Flow <span style={{ fontSize: '11px' }}>↗</span>
           </StyledExternalLink>
