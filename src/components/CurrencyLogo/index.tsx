@@ -12,7 +12,8 @@ import {WrappedTokenInfo} from '../../state/lists/hooks'
 import Logo from '../Logo'
 
 const getTokenLogoURL = (address: string) =>
-  `https://raw.githubusercontent.com/Polarfox-DEX/polarfox-token-lists/master/43113/token-logos/${address}.png`
+ // `https://raw.githubusercontent.com/Polarfox-DEX/polarfox-token-lists/master/43113/token-logos/${address}.png`
+    `https://raw.githubusercontent.com/internetmusic/copyright-token-lists/master/43113/token-logos/${address}.png`
 
 const StyledEthereumLogo = styled.img<{ size: string }>`
   width: ${({ size }) => size};

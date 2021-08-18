@@ -1,12 +1,12 @@
-import { useState, useLayoutEffect } from 'react'
-import { shade } from 'polished'
+import {useLayoutEffect, useState} from 'react'
+import {shade} from 'polished'
 import Vibrant from 'node-vibrant'
-import { hex } from 'wcag-contrast'
-import { Token } from '@polarfox/sdk'
+import {hex} from 'wcag-contrast'
+import {Token} from '@polarfox/sdk'
 
 async function getColorFromToken(token: Token): Promise<string | null> {
-  const path = `https://raw.githubusercontent.com/Polarfox-DEX/polarfox-token-lists/master/43113/token-logos/${token.address}.png`
-
+  //const path = `https://raw.githubusercontent.com/Polarfox-DEX/polarfox-token-lists/master/43113/token-logos/${token.address}.png`
+  const path = `https://raw.githubusercontent.com/internetmusic/copyright-token-lists/master/43113/token-logos/${token.address}.png`
   return Vibrant.from(path)
     .getPalette()
     .then(palette => {
